@@ -1,0 +1,6 @@
+MODULE.bazel
+MODULE.bazel.lock
+
+# cross reference indexes
+cscope.*
+tags
