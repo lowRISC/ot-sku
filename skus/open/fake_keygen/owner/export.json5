@@ -1,0 +1,28 @@
+[
+        {
+          "command": "ecdsa-export",
+          label: "nuvoton-ot00-owner-ecdsa-0"
+          filename: "nuvoton-ot00-owner-ecdsa-0.priv.der"
+          "private": true,
+          "format": "Der",
+        },
+        {
+          "command": "ecdsa-export",
+          label: "nuvoton-ot00-activate-ecdsa-0"
+          filename: "nuvoton-ot00-activate-ecdsa-0.priv.der"
+          "private": true,
+          "format": "Der",
+        },
+        {
+          "command": "ecdsa-export",
+          label: "nuvoton-ot00-unlock-ecdsa-0"
+          filename: "nuvoton-ot00-unlock-ecdsa-0.priv.der"
+          "private": true,
+          "format": "Der",
+        },
+
+        // We export the SLH-DSA keys during keygen because the
+        // hsmtool "spx" backend is only capabile of exporting
+        // the private material during keygen.
+
+]

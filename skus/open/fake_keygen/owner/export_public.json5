@@ -1,0 +1,41 @@
+[
+        {
+          "command": "ecdsa-export",
+          label: "nuvoton-ot00-owner-ecdsa-0"
+          filename: "nuvoton-ot00-owner-ecdsa-0.pub.der"
+          "private": false,
+          "format": "Der",
+        },
+        {
+          "command": "ecdsa-export",
+          label: "nuvoton-ot00-activate-ecdsa-0"
+          filename: "nuvoton-ot00-activate-ecdsa-0.pub.der"
+          "private": false,
+          "format": "Der",
+        },
+        {
+          "command": "ecdsa-export",
+          label: "nuvoton-ot00-unlock-ecdsa-0"
+          filename: "nuvoton-ot00-unlock-ecdsa-0.pub.der"
+          "private": false,
+          "format": "Der",
+        },
+
+        {
+          "command": "spx-export",
+          label: "nuvoton-ot00-owner-slhdsa-0"
+          filename: "nuvoton-ot00-owner-slhdsa-0.pub.pem"
+        },
+        {
+          "command": "spx-export",
+          label: "nuvoton-ot00-activate-slhdsa-0"
+          filename: "nuvoton-ot00-activate-slhdsa-0.pub.pem"
+        },
+        {
+          "command": "spx-export",
+          label: "nuvoton-ot00-unlock-slhdsa-0"
+          filename: "nuvoton-ot00-unlock-slhdsa-0.pub.pem"
+        },
+
+
+]

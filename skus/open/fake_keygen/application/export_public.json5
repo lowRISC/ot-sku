@@ -1,0 +1,40 @@
+[
+        {
+          "command": "ecdsa-export",
+          label: "nuvoton-ot00-app-ecdsa-prod-0"
+          filename: "nuvoton-ot00-app-ecdsa-prod-0.pub.der"
+          "private": false,
+          "format": "Der",
+        },
+        {
+          "command": "ecdsa-export",
+          label: "nuvoton-ot00-app-ecdsa-prod-1"
+          filename: "nuvoton-ot00-app-ecdsa-prod-1.pub.der"
+          "private": false,
+          "format": "Der",
+        },
+        {
+          "command": "ecdsa-export",
+          label: "nuvoton-ot00-app-ecdsa-dev-0"
+          filename: "nuvoton-ot00-app-ecdsa-dev-0.pub.der"
+          "private": false,
+          "format": "Der",
+        },
+
+        {
+          "command": "spx-export",
+          label: "nuvoton-ot00-app-slhdsa-prod-0"
+          filename: "nuvoton-ot00-app-slhdsa-prod-0.pub.pem"
+        },
+        {
+          "command": "spx-export",
+          label: "nuvoton-ot00-app-slhdsa-prod-1"
+          filename: "nuvoton-ot00-app-slhdsa-prod-1.pub.pem"
+        },
+        {
+          "command": "spx-export",
+          label: "nuvoton-ot00-app-slhdsa-dev-0"
+          filename: "nuvoton-ot00-app-slhdsa-dev-0.pub.pem"
+        },
+
+]
