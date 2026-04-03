@@ -1,0 +1,56 @@
+[
+        {
+          "command": "ecdsa-export",
+          "label": "ot00-earlgrey-a2-root-ecdsa-prod-0",
+          "filename": "ot00-earlgrey-a2-root-ecdsa-prod-0.priv.der",
+          "private": true,
+          "format": "Der",
+        },
+        {
+          "command": "ecdsa-export",
+          "label": "ot00-earlgrey-a2-root-ecdsa-prod-1",
+          "filename": "ot00-earlgrey-a2-root-ecdsa-prod-1.priv.der",
+          "private": true,
+          "format": "Der",
+        },
+        {
+          "command": "ecdsa-export",
+          "label": "ot00-earlgrey-a2-root-ecdsa-prod-2",
+          "filename": "ot00-earlgrey-a2-root-ecdsa-prod-2.priv.der",
+          "private": true,
+          "format": "Der",
+        },
+        {
+          "command": "ecdsa-export",
+          "label": "ot00-earlgrey-a2-root-ecdsa-dev-0",
+          "filename": "ot00-earlgrey-a2-root-ecdsa-dev-0.priv.der",
+          "private": true,
+          "format": "Der",
+        },
+
+
+        // We export the SLH-DSA keys during keygen because the
+        // hsmtool "spx" backend is only capabile of exporting
+        // the private material during keygen.
+
+        //{
+        //  "command": "spx-export",
+        //  "label": "ot00-earlgrey-a2-root-slhdsa-prod-0",
+        //  "filename": "ot00-earlgrey-a2-root-slhdsa-prod-0.priv.pem",
+        //},
+        //{
+        //  "command": "spx-export",
+        //  "label": "ot00-earlgrey-a2-root-slhdsa-prod-1",
+        //  "filename": "ot00-earlgrey-a2-root-slhdsa-prod-1.priv.pem",
+        //},
+        //{
+        //  "command": "spx-export",
+        //  "label": "ot00-earlgrey-a2-root-slhdsa-prod-2",
+        //  "filename": "ot00-earlgrey-a2-root-slhdsa-prod-2.priv.pem",
+        //},
+        //{
+        //  "command": "spx-export",
+        //  "label": "ot00-earlgrey-a2-root-slhdsa-dev-0",
+        //  "filename": "ot00-earlgrey-a2-root-slhdsa-dev-0.priv.pem",
+        //},
+]
