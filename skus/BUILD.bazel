@@ -3,3 +3,15 @@
 # SPDX-License-Identifier: Apache-2.0
 
 package(default_visibility = ["//visibility:public"])
+
+# FT flow in open source requires this alias be defined.
+alias(
+    name = "default_perso_fw_ext",
+    actual = "//example:personalize_fw_ext",
+)
+
+# FT flow in open source requires this alias be defined.
+alias(
+    name = "default_ft_ext_lib",
+    actual = "//example:ft_ext_lib",
+)
