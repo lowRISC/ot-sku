@@ -1,0 +1,205 @@
+{
+  "config_version": 4,
+  "update_mode": "SelfVersion",
+  "sram_exec": "DisabledLocked",
+  "min_security_version_bl0": "NoChange",
+  "boot_svc_after_wakeup": "True",
+
+
+  // We'll use ECDSA for now; this should be "HybridEcdsaSpx" in the future.
+  "ownership_key_alg": "EcdsaP256",
+  "owner_key": {
+    "Ecdsa": "shared/rom_ext/gb/keys/gb00-ownership-owner-0.pub.der"
+  },
+  "activate_key": {
+    "Ecdsa": "shared/rom_ext/gb/keys/gb00-ownership-activate-0.pub.der"
+  },
+  "unlock_key": {
+    "Ecdsa": "shared/rom_ext/gb/keys/gb00-ownership-unlock-0.pub.der"
+  },
+  "data": [
+    {
+      // Application keys validate owner firmware.
+      "ApplicationKey": {
+        "key_alg": "EcdsaP256",
+        "key_domain": "Prod",
+        "usage_constraint": "0x0",
+        "key": {
+          "Ecdsa": "shared/rom_ext/gb/keys/gb00-app-key-prod-0.pub.der",
+        }
+      },
+    },
+    {
+      "ApplicationKey": {
+        "key_alg": "EcdsaP256",
+        "key_domain": "Dev",
+        // Dev key must be node locked to devid0 (0x02) and devid1 (0x04)
+        "usage_constraint": "0x6",
+        "key": {
+          "Ecdsa": "shared/rom_ext/gb/keys/gb00-app-key-dev-0.pub.der",
+        }
+      },
+    },
+    {
+      // Application keys validate owner firmware.
+      "ApplicationKey": {
+        "key_alg": "EcdsaP256",
+        "key_domain": "Test",
+        "usage_constraint": "0x0",
+        "key": {
+          "Ecdsa": "shared/rom_ext/gb/keys/gb00-app-key-test-0.pub.der",
+        }
+      },
+    },
+    {
+      "FlashConfig": {
+        "config": [
+          {
+            // Slot A App Firmware region: 64 to 476 KiB.
+            "start": 32,
+            "size": 206,
+            // Permissions: read, erase and program.
+            "read": true,
+            "program": true,
+            "erase": true,
+            // Region properties.
+            "scramble": true,
+            "ecc": true,
+            "high_endurance": false,
+            "protect_when_active": true,
+            "lock": true
+          },
+          {
+            // Slot B App Firmware region
+            "start": 288,
+            "size": 206,
+            // Permissions: read, erase and program.
+            "read": true,
+            "program": true,
+            "erase": true,
+            // Region properties.
+            "scramble": true,
+            "ecc": true,
+            "high_endurance": false,
+            "protect_when_active": true,
+            "lock": true
+          },
+          {
+            // Slot A App storage region: 476 to 512 KiB.
+            "start": 238,
+            "size": 18,
+            // Permissions: read, erase and program.
+            "read": true,
+            "program": true,
+            "erase": true,
+            // Region properties. Must disable scramble so we have following
+            // write patterh: 0xFF -> 0x?? -> 0x00
+            "scramble": false,
+            "ecc": true,
+            "high_endurance": true,
+            "protect_when_active": false,
+            "lock": false
+          },
+          {
+            // Slot B App storage region (excludes Identity seed region)
+            "start": 494,
+            "size": 18,
+            // Permissions: read, erase and program.
+            "read": true,
+            "program": true,
+            "erase": true,
+            // Region properties. Must disable scramble so we have following
+            // write patterh: 0xFF -> 0x?? -> 0x00
+            "scramble": false,
+            "ecc": true,
+            "high_endurance": true,
+            "protect_when_active": false,
+            "lock": false
+          }
+        ]
+      },
+    },
+    {
+      // The Flash INFO Config defines how the INFO pages reserved for the
+      // owner will be configured.  The configuration properties are the
+      // same as the flash region config properties, however the
+      // `protect_when_active` flag is meaningless.
+      //
+      // On the Earlgrey_PROD chip, INFO pages 5 to 8 (inclusive) in
+      // banks 0 & 1 are reserved for owner use.
+      "FlashInfoConfig": {
+        "config": [
+          {
+            // PERSO page Ext0.
+            "bank": 1,
+            "page": 7,
+            "read": true,
+            "program": false,
+            "erase": false,
+            "scramble": true,
+            "ecc": true,
+            "high_endurance": false,
+            "lock": true
+          },
+          {
+            // PERSO page Ext1.
+            "bank": 1,
+            "page": 8,
+            "read": true,
+            "program": false,
+            "erase": false,
+            "scramble": true,
+            "ecc": true,
+            "high_endurance": false,
+            "lock": true
+          }
+        ]
+      },
+    },
+    {
+      // The Rescue Config determines whether the ROM_EXT rescue protocol
+      // is enabled and what rescue and boot service commands are permitted.
+      "RescueConfig": {
+        "protocol": "UsbDfu",
+        "trigger": "Strapping",
+        "trigger_index": 0x33,
+        "enter_on_failure": true,
+        "timeout": 30,
+
+        // The rescue region in Flash pages.  The rescue protocol will never
+        // touch flash pages outside of this region.
+        "start": 32,
+        "size": 206,
+        // List of rescue and boot service commands permitted by the rescue
+        // protocol.  There is no preferred ordering of this list.  Rescue
+        // commands and boot service commands have distinct identifiers.
+        "command_allow": [
+          // Rescue commands:
+          "Rescue",             // Rescue firmware upload.
+          "GetBootLog",         // Boot log download.
+          "BootSvcReq",         // Boot service request upload.
+          "BootSvcRsp",         // Boot service response download.
+          "OwnerBlock",         // Owner Block (config) upload.
+          "GetDeviceId",        // Get the OpenTitan device ID.
+          "RescueB",            // Rescue SlotB of the flash.
+          "GetOwnerPage0",      // Get the content of owner page 0.
+          "GetOwnerPage1",      // Get the content of owner page 1.
+
+          // The following commands are always allowed regardless of the
+          // allow-list:
+          // "Baud",            // Change the rescue baud rate.
+          // "Reboot",          // Reboot.
+          // "Wait",            // Don't automatically reboot after data upload.
+
+          // Boot service commands allowed.  These commands can only be sent
+          // if the rescue command "BootSvcReq" is allowed.
+          "Empty",
+          "MinBl0SecVerRequest",
+          "NextBl0SlotRequest",
+          "OwnershipUnlockRequest",
+          "OwnershipActivateRequest"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+# Copyright lowRISC contributors (OpenTitan project).
+# Licensed under the Apache License, Version 2.0, see LICENSE for details.
+# SPDX-License-Identifier: Apache-2.0
+
+{
+  name: "ot00",
+  product: "earlgrey_a2",
+  si_creator: "nuvoton",
+  package: "npcr13",
+  target_lc_state: "prod",
+  otp: "ot00",
+  perso_bin: "external/provisioning_exts/open/binaries/perso/ft_personalize_{sku}_{target}.signed.bin",
+  owner_fw_boot_str: "TODO"
+  dice_ca: {
+    # TODO: mint a DICE CA key.
+    certificate: "external/provisioning_exts/shared/keys/ca/dice_ca.pem",
+    key: "gb00-earlgrey-a1-ca-dice-0",
+    key_type: "Token",
+    key_id: "0xDBF5003E7CB9EEB524780CCE766E661CFB01C7B2"
+  }
+  # TODO: mint a token unlock key.
+  token_encrypt_key: "sw/device/silicon_creator/manuf/keys/sival/rma_unlock_enc_rsa3072.pub.der"
+}
