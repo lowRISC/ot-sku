@@ -1,0 +1,10 @@
+[
+        {
+          "command": "ecdsa-export",
+          label: "nuvoton-ot00-ca-ecdsa-0"
+          filename: "nuvoton-ot00-ca-ecdsa-0.priv.der"
+          "private": true,
+          "format": "Der",
+        },
+
+]

@@ -9,6 +9,6 @@ set -eou pipefail
 cd $(dirname $0)
 cd $(git rev-parse --show-toplevel)
 
-source skus/open/keygen/softhsm_sourceme.sh
+source skus/open/fake_keygen/softhsm_sourceme.sh
 
 softhsm2-util --init-token --label temp --so-pin officer_pin --pin 123456 --free

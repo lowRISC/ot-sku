@@ -15,7 +15,7 @@ function keygen_and_export {
   local dir=$1
 
   cd ${dir}
-#  ${HSMTOOL} -t ${TOKEN} -u user -p ${PIN} exec keygen.json5
+  ${HSMTOOL} -t ${TOKEN} -u user -p ${PIN} exec keygen.json5
   ${HSMTOOL} -t ${TOKEN} -u user -p ${PIN} exec export.json5
   ${HSMTOOL} -t ${TOKEN} -u user -p ${PIN} exec export_public.json5
 
@@ -27,10 +27,11 @@ function keygen_and_export {
 # Change directory to the repository root
 cd $(dirname $0)
 cd $(git rev-parse --show-toplevel)
-source skus/open/keygen/softhsm_sourceme.sh
+source skus/open/fake_keygen/softhsm_sourceme.sh
 
 # Now change to the keygen subdir and generate keys
-cd skus/open/keygen
-keygen_and_export root
-keygen_and_export owner
-keygen_and_export application
+cd skus/open/fake_keygen
+#keygen_and_export root
+#keygen_and_export owner
+#keygen_and_export application
+keygen_and_export ca
