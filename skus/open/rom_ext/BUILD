@@ -11,12 +11,12 @@ load(
     "ROM_EXT_VERSION",
 )
 load("@rules_pkg//pkg:tar.bzl", "pkg_tar")
-load("@provisioning_exts//:rom_ext.bzl", "DOWNSTREAM")
+load("@provisioning_exts//:downstream.bzl", "DOWNSTREAM")
 
 package(default_visibility = ["//visibility:public"])
 
 manifest(d = {
-    "name": "manifest_ti",
+    "name": "manifest_open",
     "identifier": hex(CONST.ROM_EXT),
     "version_major": ROM_EXT_VERSION.MAJOR,
     "version_minor": ROM_EXT_VERSION.MINOR,
@@ -58,7 +58,7 @@ opentitan_binary(
         "$(location @lowrisc_opentitan//sw/device/silicon_creator/rom_ext:rom_ext_dice_x509)",
         "$(location @lowrisc_opentitan//sw/device/lib/crt)",
     ],
-    manifest = ":manifest_ti",
+    manifest = ":manifest_open",
     spx_key = select({
         "@lowrisc_opentitan//signing:test_keys": {"@lowrisc_opentitan//sw/device/silicon_creator/rom/keys/fake/spx:spx_keyset": "prod_key_0"},
         "//conditions:default": {"//open/keys/root:spxset": "gb00-earlgrey-a1-root-spx-test-0"},
@@ -105,11 +105,11 @@ offline_presigning_artifacts(
     testonly = True,
     srcs = [":rom_ext_dice_x509_prod_slot_virtual"],
     ecdsa_key = {
-        "//open/keys/root:keyset": "pie_earlgrey_root_prod0_ecdsa",
+        "//open/keys/root:keyset": "ot00-earlgrey-a2-root-ecdsa-prod-0",
     },
-    manifest = ":manifest_ti",
+    manifest = ":manifest_open",
     spx_key = {
-        "//open/keys/root:spxset": "pie_earlgrey_root_prod0_slhdsa",
+        "//open/keys/root:spxset": "ot00-earlgrey-a2-root-slhdsa-prod-0",
     },
     tags = ["manual"],
 )
@@ -148,7 +148,7 @@ genrule(
     # inverted dependency relationship between lowRISC/opentitan and
     # ot-sku.  Remove after converting to bzlmod.
     cmd = """
-        ln -s external/+hooks+provisioning_exts/open . && \
+        ln -s external/provisioning_exts+/open . && \
         $(execpath @lowrisc_opentitan//sw/host/opentitantool) --rcfile= \
             ownership config --input $(location :owner.json5) $@
     """,
@@ -165,7 +165,7 @@ genrule(
         $(execpath @lowrisc_opentitan//util/sh/scripts:bin2c.sh) \
                 --input $(location :owner_bin) \
                 --output $@ \
-                --name ti_owner
+                --name open_owner
     """,
     tools = [
         "@lowrisc_opentitan//util/sh/scripts:bin2c.sh",

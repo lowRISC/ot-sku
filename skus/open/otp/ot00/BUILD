@@ -248,8 +248,13 @@ otp_alert_digest(
 # C library containing OTP constants to build FT individualization binary and
 # personalized OTP images for FPGA testing.
 ################################################################################
+otp_json(
+    name = "otp_json_image_seed",
+    seed = "85452983286950371191603618368782861611109037138182535346147818831008789508651",
+)
+
 otp_c_lib_and_personalized_images(
-    image_seed = "@provisioning_exts//shared/otp/gb00:otp_json_gb00_image_seed",
+    image_seed = ":otp_json_image_seed",
     sw_overlays = [
         ":otp_json_creator_sw_cfg",
         ":otp_json_owner_sw_cfg",
