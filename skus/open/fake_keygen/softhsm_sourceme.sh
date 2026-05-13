@@ -4,9 +4,9 @@
 
 # Env vars setup for SoftHSM and hsmtool
 
-if [[ -e skus/open/keygen/softhsm2.conf ]]; then
+if [[ -e skus/open/fake_keygen/softhsm2.conf ]]; then
 
-  export SOFTHSM2_CONF=${PWD}/skus/open/keygen/softhsm2.conf
+  export SOFTHSM2_CONF=${PWD}/skus/open/fake_keygen/softhsm2.conf
   export HSMTOOL_MODULE=/usr/lib/x86_64-linux-gnu/softhsm/libsofthsm2.so
 
   # NOTE: we're using PKCS#11 elementary files (CKO_DATA objects) to store SLHDSA keys.
@@ -16,7 +16,7 @@ if [[ -e skus/open/keygen/softhsm2.conf ]]; then
 # SoftHSM v2 configuration file
 
 ## Note: this is relative to the root of this repo.
-directories.tokendir = ${PWD}/skus/open/keygen/data
+directories.tokendir = ${PWD}/skus/open/fake_keygen/data
 objectstore.backend = file
 
 # ERROR, WARNING, INFO, DEBUG
