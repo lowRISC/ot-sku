@@ -30,9 +30,9 @@ keyset(
     name = "spxset",
     build_setting_default = "",
     keys = {
-        "nuvoton-ot00-app-slhdsa-prod-0.pub.pem": "nuvoton-ot00-app-slhdsa-prod-0",
-        "nuvoton-ot00-app-slhdsa-prod-1.pub.pem": "nuvoton-ot00-app-slhdsa-prod-1",
-        "nuvoton-ot00-app-slhdsa-dev-0.pub.pem": "nuvoton-ot00-app-slhdsa-dev-0",
+        "nuvoton-ot00-app-slhdsa-prod-0.pub.pem": "nuvoton-ot00-app-slhdsa-prod-0:domain=PreHashedSha256",
+        "nuvoton-ot00-app-slhdsa-prod-1.pub.pem": "nuvoton-ot00-app-slhdsa-prod-1:domain=PreHashedSha256",
+        "nuvoton-ot00-app-slhdsa-dev-0.pub.pem": "nuvoton-ot00-app-slhdsa-dev-0:domain=PreHashedSha256",
     },
     profile = "nuvoton-ot00-app",
     tool = "@lowrisc_opentitan//signing:token",

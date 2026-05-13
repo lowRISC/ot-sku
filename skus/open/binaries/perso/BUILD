@@ -16,7 +16,7 @@ copy_files(
     ],
     filter = [
         # TODO: filter relevant build targets from above label
-        "ft_personalize_open",
+        "ft_personalize_ot00",
     ],
     relative_to = ":BUILD",
     tags = ["manual"],
@@ -33,19 +33,19 @@ copy_files(
 #    }
 #)
 
-#exec_env_filegroup(
-#    name = "ft_personalize_fw",
-#    testonly = True,
-#    exec_env = {
-#        # TODO: map execenvs to nicknames.
-#        "@lowrisc_opentitan//hw/top_earlgrey:fpga_hyper310_rom_with_fake_keys": "cw310",
-#        "@lowrisc_opentitan//hw/top_earlgrey:fpga_cw340_rom_with_fake_keys": "cw340",
-#        "@lowrisc_opentitan//hw/top_earlgrey:silicon_creator": "silicon",
-#    },
-#    files = {
-#        # TODO: replace with Owner FW when ready.
-#        "@provisioning_exts//shared/owner_fw:ft_personalize_slot_virtual_fpga_cw310_rom_ext.signed.bin": "cw310",
-#        "@provisioning_exts//shared/owner_fw:ft_personalize_slot_virtual_fpga_cw340_rom_ext.signed.bin": "cw340",
-#        "@provisioning_exts//shared/owner_fw:ft_personalize_slot_virtual_silicon_owner_rom_ext.signed.bin": "silicon",
-#    },
-#)
+exec_env_filegroup(
+    name = "ft_personalize_ot00",
+    testonly = True,
+    exec_env = {
+        "@lowrisc_opentitan//hw/top_earlgrey:fpga_hyper310_rom_with_fake_keys": "cw310",
+        "@lowrisc_opentitan//hw/top_earlgrey:fpga_cw340_rom_with_fake_keys": "cw340",
+        "@lowrisc_opentitan//hw/top_earlgrey:silicon_creator": "silicon",
+    },
+    # The "fake_keys" filenames are an unfortunate consequence of a historical
+    # choice of naming convention.  They are, in fact, signed by offline HSM keys.
+    files = {
+        "ft_personalize_ot00_fpga_cw340_rom_with_fake_keys.signed.bin": "cw340",
+        "ft_personalize_ot00_fpga_hyper310_rom_with_fake_keys.signed.bin": "cw310",
+        "ft_personalize_ot00_silicon_creator.signed.bin": "silicon",
+    },
+)

@@ -9,13 +9,13 @@
   // We'll use ECDSA for now; this should be "HybridEcdsaSpx" in the future.
   "ownership_key_alg": "EcdsaP256",
   "owner_key": {
-    "Ecdsa": "shared/rom_ext/gb/keys/gb00-ownership-owner-0.pub.der"
+    "Ecdsa": "open/keys/owner/nuvoton-ot00-owner-ecdsa-0.pub.der"
   },
   "activate_key": {
-    "Ecdsa": "shared/rom_ext/gb/keys/gb00-ownership-activate-0.pub.der"
+    "Ecdsa": "open/keys/owner/nuvoton-ot00-activate-ecdsa-0.pub.der"
   },
   "unlock_key": {
-    "Ecdsa": "shared/rom_ext/gb/keys/gb00-ownership-unlock-0.pub.der"
+    "Ecdsa": "open/keys/owner/nuvoton-ot00-unlock-ecdsa-0.pub.der"
   },
   "data": [
     {
@@ -25,18 +25,7 @@
         "key_domain": "Prod",
         "usage_constraint": "0x0",
         "key": {
-          "Ecdsa": "shared/rom_ext/gb/keys/gb00-app-key-prod-0.pub.der",
-        }
-      },
-    },
-    {
-      "ApplicationKey": {
-        "key_alg": "EcdsaP256",
-        "key_domain": "Dev",
-        // Dev key must be node locked to devid0 (0x02) and devid1 (0x04)
-        "usage_constraint": "0x6",
-        "key": {
-          "Ecdsa": "shared/rom_ext/gb/keys/gb00-app-key-dev-0.pub.der",
+          "Ecdsa": "open/keys/owner/nuvoton-ot00-app-ecdsa-prod-0.pub.der",
         }
       },
     },
@@ -44,10 +33,19 @@
       // Application keys validate owner firmware.
       "ApplicationKey": {
         "key_alg": "EcdsaP256",
-        "key_domain": "Test",
+        "key_domain": "Prod",
         "usage_constraint": "0x0",
         "key": {
-          "Ecdsa": "shared/rom_ext/gb/keys/gb00-app-key-test-0.pub.der",
+          "Ecdsa": "open/keys/owner/nuvoton-ot00-app-ecdsa-prod-1.pub.der",
+        }
+      },
+    },
+    {
+      "ApplicationKey": {
+        "key_alg": "EcdsaP256",
+        "key_domain": "Dev",
+        "key": {
+          "Ecdsa": "open/keys/owner/nuvoton-ot00-app-ecdsa-dev-0.pub.der",
         }
       },
     },
