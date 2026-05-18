@@ -44,8 +44,8 @@ exec_env_filegroup(
     # The "fake_keys" filenames are an unfortunate consequence of a historical
     # choice of naming convention.  They are, in fact, signed by offline HSM keys.
     files = {
-        "ft_personalize_ot00_fpga_cw340_rom_with_fake_keys.signed.bin": "cw340",
-        "ft_personalize_ot00_fpga_hyper310_rom_with_fake_keys.signed.bin": "cw310",
-        "ft_personalize_ot00_silicon_creator.signed.bin": "silicon",
+        "@provisioning_exts_extra//perso_release:ft_personalize_ot00_fpga_cw340_rom_with_fake_keys.signed.bin": "cw340",
+        "@provisioning_exts_extra//perso_release:ft_personalize_ot00_fpga_hyper310_rom_with_fake_keys.signed.bin": "cw310",
+        "@provisioning_exts_extra//perso_release:ft_personalize_ot00_silicon_creator.signed.bin": "silicon",
     },
 )
