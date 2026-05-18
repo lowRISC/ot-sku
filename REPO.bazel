@@ -3,6 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # Make sure that the directories below are not considered part
-# of the repository. They are made available # to the OT repository
+# of the repository. They are made available to the OT repository
 # by the `hook` repository rule and the `extra` extension.
 ignore_directories(["skus"])
