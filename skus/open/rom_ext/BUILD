@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 load("@lowrisc_opentitan//rules:const.bzl", "CONST", "hex")
+load("@lowrisc_opentitan//rules:signing.bzl", "signature_test")
 load("@lowrisc_opentitan//rules:manifest.bzl", "manifest")
 load("@lowrisc_opentitan//rules:signing.bzl", "offline_presigning_artifacts", "offline_signature_attach")
 load("@lowrisc_opentitan//rules/opentitan:defs.bzl", "opentitan_binary")
@@ -104,7 +105,7 @@ opentitan_binary(
 )
 
 offline_presigning_artifacts(
-    name = "presigning",
+    name = "rom_ext",
     testonly = True,
     srcs = [":rom_ext_dice_x509_prod_slot_virtual"],
     ecdsa_key = {
@@ -117,10 +118,25 @@ offline_presigning_artifacts(
     tags = ["manual"],
 )
 
-pkg_tar(
-    name = "digests",
+# We want to publish pre-signed binaries in the presign package.
+# Use a filegroup to capture the binary output group.
+filegroup(
+    name = "binaries",
     testonly = True,
-    srcs = [":presigning"],
+    srcs = [":rom_ext"],
+    output_group = "binary",
+    tags = ["manual"],
+)
+
+pkg_tar(
+    name = "presign_rom_ext",
+    testonly = True,
+    srcs = [
+        ":binaries",
+        ":rom_ext",
+        "@provisioning_exts//shared/repo:presign_repo",
+    ],
+    extension = "tar.xz",
     mode = "0644",
     tags = ["manual"],
 )
@@ -129,7 +145,7 @@ offline_signature_attach(
     name = "signed",
     testonly = True,
     srcs = [
-        ":presigning",
+        "@provisioning_exts_extra//presign_rom_ext:presigned",
     ],
     ecdsa_signatures = [
         "//open/signatures/rom_ext:ecdsa_signatures",
@@ -137,6 +153,20 @@ offline_signature_attach(
     spx_signatures = [
         "//open/signatures/rom_ext:spx_signatures",
     ],
+    tags = ["manual"],
+)
+
+signature_test(
+    name = "signature_test",
+    srcs = [
+        ":signed",
+    ],
+    ecdsa_key = {
+        "//open/keys/root:keyset": "ot00-earlgrey-a2-root-ecdsa-prod-0",
+    },
+    spx_key = {
+        "//open/keys/root:spxset": "ot00-earlgrey-a2-root-slhdsa-prod-0",
+    },
     tags = ["manual"],
 )
 
@@ -169,4 +199,16 @@ cc_library(
         "@lowrisc_opentitan//sw/device/silicon_creator/lib/ownership:owner_block",
     ],
     alwayslink = True,
+)
+
+pkg_tar(
+    name = "rom_ext_release",
+    testonly = True,
+    srcs = [
+        ":signed",
+        "@provisioning_exts//shared/repo:file_repo",
+    ],
+    extension = "tar.xz",
+    mode = "0644",
+    tags = ["manual"],
 )
