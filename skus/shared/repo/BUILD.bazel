@@ -1,0 +1,31 @@
+# Copyright lowRISC contributors (OpenTitan project).
+# Licensed under the Apache License, Version 2.0, see LICENSE for details.
+# SPDX-License-Identifier: Apache-2.0
+
+load("@rules_pkg//pkg:mappings.bzl", "pkg_files")
+
+package(default_visibility = ["//visibility:public"])
+
+pkg_files(
+    name = "file_repo",
+    srcs = [
+        "build_bazel",
+        "repo_bazel",
+    ],
+    renames = {
+        "build_bazel": "BUILD.bazel",
+        "repo_bazel": "REPO.bazel",
+    },
+)
+
+pkg_files(
+    name = "presign_repo",
+    srcs = [
+        "presign_bazel",
+        "repo_bazel",
+    ],
+    renames = {
+        "presign_bazel": "BUILD.bazel",
+        "repo_bazel": "REPO.bazel",
+    },
+)

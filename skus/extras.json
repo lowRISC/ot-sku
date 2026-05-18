@@ -1,0 +1,28 @@
+[
+  {
+    "rule": "http_archive",
+    "name": "presign_perso",
+    "type": "tar.xz",
+    "url": "https://github.com/lowRISC/ot-sku/releases/download/FAKE_BUILD_20260518_rc00/presign_perso.tar.xz"
+  },
+  {
+    "rule": "http_archive",
+    "name": "presign_rom_ext",
+    "type": "tar.xz",
+    "url": "https://github.com/lowRISC/ot-sku/releases/download/FAKE_BUILD_20260518_rc00/presign_rom_ext.tar.xz"
+  },
+
+  {
+    "rule": "http_archive",
+    "name": "perso_release",
+    "type": "tar.xz",
+    "url": "https://github.com/lowRISC/ot-sku/releases/download/FAKE_RELEASE_20260518_rc00/perso_release.tar.xz"
+  },
+  {
+    "rule": "http_archive",
+    "name": "rom_ext_release",
+    "type": "tar.xz",
+    "url": "https://github.com/lowRISC/ot-sku/releases/download/FAKE_RELEASE_20260518_rc00/rom_ext_release.tar.xz"
+  }
+
+]
