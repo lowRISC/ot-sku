@@ -1,0 +1,25 @@
+# Licenses and Copyright information for top-level files and directories that
+# couldn't otherwise contain it.
+
+version = 1
+
+[[annotations]]
+path = ["*"]
+SPDX-FileCopyrightText = "lowRISC contributors (OpenTitan project)"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = [
+    "skus/.gitignore",
+    "skus/**/*.tar.gz",
+    "skus/**/*.json5",
+    "skus/**/*.object",
+    "skus/**/*.der",
+    "skus/**/*.pem",
+    "skus/open/fake_keygen/**/*",
+    "skus/open/keys/ca/README.md",
+    "skus/open/keys/ca/dice_ca.conf",
+    "skus/open/keys/owner/README.md",
+]
+SPDX-FileCopyrightText = "lowRISC contributors (OpenTitan project)."
+SPDX-License-Identifier = "Apache-2.0"
