@@ -1,0 +1,26 @@
+# Copyright lowRISC Contributors (OpenTitan project).
+# Licensed under the Apache License, Version 2.0, see LICENSE for details.
+# SPDX-License-Identifier: Apache-2.0
+
+name: CI
+
+on:
+  push:
+    branches: ["*"]
+  pull_request:
+    branches: ["*"]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-check:
+    runs-on: "ubuntu-24.04"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: License check
+        uses: fsfe/reuse-action@v6
