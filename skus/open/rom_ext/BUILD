@@ -112,7 +112,7 @@ genrule(
     # inverted dependency relationship between lowRISC/opentitan and
     # ot-sku.  Remove after converting to bzlmod.
     cmd = """
-        ln -s external/+hooks+provisioning_exts/open . && \
+        ln -s external/+_repo_rules3+provisioning_exts/open . && \
         $(execpath @lowrisc_opentitan//sw/host/opentitantool) --rcfile= \
             ownership config --input $(location :owner.json5) $@
     """,
