@@ -25,16 +25,12 @@ hub_repo = repository_rule(
 
 _ARCHIVES = {
     "presign_perso": {
-        "url": "https://github.com/lowRISC/ot-sku/releases/download/FAKE_BUILD_20260518_rc00/presign_perso.tar.xz",
+        "url": "https://github.com/pamaury/ot-sku/releases/download/TEST_TAG_2/presign_perso.tar.xz",
+        "sha256": "c2241a0f3df8469d67afe2ea39de2bc64d56e63304a68179eba5d64ea6d3c360",
     },
     "presign_rom_ext": {
-        "url": "https://github.com/lowRISC/ot-sku/releases/download/FAKE_BUILD_20260518_rc00/presign_rom_ext.tar.xz",
-    },
-    "perso_release": {
-        "url": "https://github.com/lowRISC/ot-sku/releases/download/FAKE_RELEASE_20260518_rc00/perso_release.tar.xz",
-    },
-    "rom_ext_release": {
-        "url": "https://github.com/lowRISC/ot-sku/releases/download/FAKE_RELEASE_20260518_rc00/rom_ext_release.tar.xz",
+        "url": "https://github.com/pamaury/ot-sku/releases/download/TEST_TAG_2/presign_rom_ext.tar.xz",
+        "sha256": "1ec3d4aeecffb41c57ba4287eedbd278db3e1c7535e943c83553270dafea7765",
     },
 }
 
