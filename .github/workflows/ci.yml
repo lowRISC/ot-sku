@@ -24,3 +24,8 @@ jobs:
 
       - name: License check
         uses: fsfe/reuse-action@v6
+
+      - name: Python check
+        run: |
+          pip install flake8
+          flake8 .

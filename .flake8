@@ -1,0 +1,6 @@
+[flake8]
+max-line-length = 100
+
+ignore =
+  # Don't complain about line breaks after operators
+  W504
