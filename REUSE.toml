@@ -20,6 +20,7 @@ path = [
     "skus/open/keys/ca/README.md",
     "skus/open/keys/ca/dice_ca.conf",
     "skus/open/keys/owner/README.md",
+    "doc/**",
 ]
 SPDX-FileCopyrightText = "lowRISC contributors (OpenTitan project)."
 SPDX-License-Identifier = "Apache-2.0"
