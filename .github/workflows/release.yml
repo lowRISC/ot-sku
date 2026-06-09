@@ -43,18 +43,22 @@ on:
         type: string
       artifact_perso:
         description: Release the `perso` artifact?
+        required: true
         type: boolean
         default: true # <<< ARTIFACT_PERSO >>>
       artifact_rom_ext:
         description: Release the `rom_ext` artifact?
+        required: true
         type: boolean
         default: true # <<< ARTIFACT_ROM_EXT >>>
       ot_repo:
         description: Opentitan repository to checkout
+        required: true
         type: string
         default: lowRISC/opentitan # <<< OT_REPO >>>
       ot_ref:
         description: Git branch or commit hash to checkout (opentitan)
+        required: true
         type: string
         default: earlgrey_1.0.0 # <<< OT_REF >>>
 
