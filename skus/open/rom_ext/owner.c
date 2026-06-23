@@ -2,7 +2,7 @@
 // Licensed under the Apache License, Version 2.0, see LICENSE for details.
 // SPDX-License-Identifier: Apache-2.0
 
-#include "open/rom_ext/owner.h"
+extern const unsigned char open_owner[2048];
 
 #include "sw/device/lib/base/hardened_memory.h"
 #include "sw/device/lib/base/macros.h"

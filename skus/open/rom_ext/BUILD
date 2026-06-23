@@ -12,6 +12,7 @@ load(
 )
 load("@rules_pkg//pkg:tar.bzl", "pkg_tar")
 load("@provisioning_exts//:downstream.bzl", "DOWNSTREAM")
+load("@lowrisc_opentitan//rules:ownership.bzl", "bin2c", "owner_block_binary")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -70,6 +71,7 @@ opentitan_binary(
         ":owner",
         "@lowrisc_opentitan//sw/device/lib/crt",
         "@lowrisc_opentitan//sw/device/silicon_creator/lib:manifest_def",
+        "@lowrisc_opentitan//sw/device/silicon_creator/lib/ownership:isfb_null",
         "@lowrisc_opentitan//sw/device/silicon_creator/lib/rescue:rescue_usbdfu",
         "@lowrisc_opentitan//sw/device/silicon_creator/rom_ext:rom_ext_dice_x509",
         "@lowrisc_opentitan//sw/device/silicon_creator/rom_ext/imm_section:main_section_dice_x509_slot_virtual",
@@ -94,6 +96,7 @@ opentitan_binary(
         # as chips maintain their ownership configuration in flash.
         "@lowrisc_opentitan//sw/device/lib/crt",
         "@lowrisc_opentitan//sw/device/silicon_creator/lib:manifest_def",
+        "@lowrisc_opentitan//sw/device/silicon_creator/lib/ownership:isfb_null",
         "@lowrisc_opentitan//sw/device/silicon_creator/lib/rescue:rescue_usbdfu",
         "@lowrisc_opentitan//sw/device/silicon_creator/rom_ext:rom_ext_dice_x509",
         "@lowrisc_opentitan//sw/device/silicon_creator/rom_ext/imm_section:main_section_dice_x509_slot_virtual",
@@ -137,48 +140,27 @@ offline_signature_attach(
     tags = ["manual"],
 )
 
-genrule(
-    name = "owner_bin",
-    srcs = [
-        "owner.json5",
+owner_block_binary(
+    name = "owner_config_bin",
+    src = "owner.json5",
+    keys = [
         "//open/keys/owner:all_keys",
     ],
-    outs = ["owner.bin"],
-    # FIXME(ttrippel, cfrantz): The symlink is necessary because of the
-    # inverted dependency relationship between lowRISC/opentitan and
-    # ot-sku.  Remove after converting to bzlmod.
-    cmd = """
-        ln -s external/provisioning_exts+/open . && \
-        $(execpath @lowrisc_opentitan//sw/host/opentitantool) --rcfile= \
-            ownership config --input $(location :owner.json5) $@
-    """,
-    tools = ["@lowrisc_opentitan//sw/host/opentitantool"],
+    relative_to = "//:BUILD.bazel",
 )
 
-genrule(
-    name = "owner_h",
-    srcs = [
-        ":owner_bin",
-    ],
-    outs = ["owner.h"],
-    cmd = """
-        $(execpath @lowrisc_opentitan//util/sh/scripts:bin2c.sh) \
-                --input $(location :owner_bin) \
-                --output $@ \
-                --name open_owner
-    """,
-    tools = [
-        "@lowrisc_opentitan//util/sh/scripts:bin2c.sh",
-        "@lowrisc_opentitan//util/sh/scripts:c.hexdump",
-    ],
+bin2c(
+    name = "owner_config",
+    src = ":owner_config_bin",
+    var_name = "open_owner",
 )
 
 cc_library(
     name = "owner",
     srcs = [
         "owner.c",
+        ":owner_config",
     ],
-    textual_hdrs = [":owner_h"],
     deps = [
         "@lowrisc_opentitan//sw/device/silicon_creator/lib:boot_data",
         "@lowrisc_opentitan//sw/device/silicon_creator/lib/drivers:flash_ctrl",
