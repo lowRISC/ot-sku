@@ -41,5 +41,8 @@ exec_env_filegroup(
         "rom_ext_dice_x509_prod_slot_virtual_fpga_cw310.signed.bin": "cw310",
         "rom_ext_dice_x509_prod_slot_virtual_fpga_cw340.signed.bin": "cw340",
         "rom_ext_dice_x509_prod_slot_virtual_silicon_creator.signed.bin": "silicon",
+        "@provisioning_exts_extra//rom_ext_release:rom_ext_dice_x509_prod_slot_virtual_fpga_cw310.signed.bin": "cw340",
+        "@provisioning_exts_extra//rom_ext_release:rom_ext_dice_x509_prod_slot_virtual_fpga_cw340.signed.bin": "cw310",
+        "@provisioning_exts_extra//rom_ext_release:rom_ext_dice_x509_prod_slot_virtual_silicon_creator.signed.bin": "silicon",
     },
 )

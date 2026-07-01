@@ -24,3 +24,21 @@ jobs:
 
       - name: License check
         uses: fsfe/reuse-action@v6
+
+      - name: Python check
+        run: |
+          pip install flake8
+          flake8 .
+
+      - name: Buildifier check
+        run: |
+          bazelisk run //quality:buildifier_check
+
+      - name: Check Bazel lock file
+        run: |
+          bazelisk mod deps
+          if ! git diff --exit-code MODULE.bazel.lock; then
+            echo "::error::MODULE.bazel.lock is not up to date"          >&2
+            echo "Regenerate this lock file using \`bazelisk mod deps\`" >&2
+            exit 1
+          fi

@@ -9,8 +9,7 @@
   package: "npcr13",
   target_lc_state: "prod",
   otp: "ot00",
-  // TODO: replace ot00 with {sku} once signed binaries are available
-  perso_bin: "external/provisioning_exts/open/binaries/perso/ft_personalize_ot00_{target}.signed.bin",
+  perso_bin: "external/ot_provisioning_exts++extra+provisioning_exts_extra/perso_release/ft_personalize_{sku}_{target}.signed.bin"
 
   // We'd like to wait for "USB-DFU rescue ready", but ft_lib::check_slot_b_boot_up
   // fails if we observe "BFV:.*" and the rescue ready message is after the boot
