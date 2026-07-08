@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 module(
-    name = "lowrisc_ot_sku",
+    name = "ot_provisioning_exts",
     version = "0.0.1",
 )
 
