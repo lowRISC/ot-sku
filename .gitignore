@@ -1,2 +1,5 @@
 bazel-*
 skus/open/fake_keygen/softhsm2.conf
+*.bin
+*_sig
+tmp.*/

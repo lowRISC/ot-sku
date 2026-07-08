@@ -22,7 +22,7 @@ EXT_EARLGREY_SKUS = {
         "ecdsa_key": {},
         "spx_key": {},
         "signature_prefix": None,
-        "orchestrator_cfg": "@provisioning_exts//open/orchestrator:emulation_open.hjson",
+        "orchestrator_cfg": "@provisioning_exts//open/orchestrator:emulation_open",
     },
 
     ############################################################################
@@ -46,7 +46,7 @@ EXT_EARLGREY_SKUS = {
         "spx_key": {"@provisioning_exts//open/keys/root:spxset": "ot00-earlgrey-a2-root-slhdsa-prod-0"},
         "signature_prefix": "@provisioning_exts//open/signatures/perso",
         "perso_bin": "@provisioning_exts//open/binaries/perso:ft_personalize_ot00",
-        "orchestrator_cfg": "@provisioning_exts//open/orchestrator:ot00_staging.hjson",
+        "orchestrator_cfg": "@provisioning_exts//open/orchestrator:ot00_staging",
         "offline": False,
     },
     "ot00": {
@@ -62,7 +62,7 @@ EXT_EARLGREY_SKUS = {
         "spx_key": {"@provisioning_exts//open/keys/root:spxset": "ot00-earlgrey-a2-root-slhdsa-prod-0"},
         "signature_prefix": "@provisioning_exts//open/signatures/perso",
         "perso_bin": "@provisioning_exts//open/binaries/perso:ft_personalize_ot00",
-        "orchestrator_cfg": "@provisioning_exts//open/orchestrator:ot00.hjson",
+        "orchestrator_cfg": "@provisioning_exts//open/orchestrator:ot00",
         "offline": True,
     },
 }
