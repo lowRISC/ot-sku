@@ -1,0 +1,51 @@
+# Copyright lowRISC Contributors (OpenTitan project).
+# Licensed under the Apache License, Version 2.0, see LICENSE for details.
+# SPDX-License-Identifier: Apache-2.0
+
+name: FPGA CI
+
+on:
+  push:
+    branches: ["*"]
+  # This is required to get a token with write permissions.
+  pull_request_target:
+    branches: ["*"]
+
+concurrency:
+  group: fpga-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write # For repository dispatch
+
+jobs:
+  fpga-manuf:
+    runs-on: "ubuntu-24.04"
+    steps:
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJSON(github) }}
+        run: echo "$GITHUB_CONTEXT"
+      # Trigger a cross-repo CI run on the Opentitan repository to run some FPGA tests
+      - name: Run FPGA manufacturing tests
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
+        with:
+          script: |
+            const payload = {
+              sha: context.eventName === 'pull_request_target' ? context.payload.pull_request.head.sha : context.sha,
+              pull_request: context.issue.number,
+              inputs: {
+                // For push events, also send branch name (for batching)
+                branch: context.eventName === 'pull_request_target' ? undefined : context.ref,
+                run_name: context.eventName === 'pull_request_target' ? context.payload.pull_request.title : context.payload.head_commit.message.split('\n')[0],
+              },
+            };
+            await github.rest.repos.createDispatchEvent({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              event_type: 'cross-repo-ci',
+              client_payload: {
+                ...payload,
+                target: `${context.repo.owner}/opentitan/earlgrey_1.0.0/ot-sku-ci.yml`,
+              }
+            });
