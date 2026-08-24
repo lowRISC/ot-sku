@@ -24,8 +24,8 @@ rust_library(
     srcs = ["ft_ext_lib.rs"],
     deps = [
         "@crate_index//:anyhow",
-        "@crate_index//:arrayvec",
         "@crate_index//:log",
+        "@lowrisc_opentitan//sw/host/provisioning/perso_tlv_lib",
         "@lowrisc_opentitan//sw/host/provisioning/util_lib",
     ],
 )
