@@ -23,6 +23,8 @@ hub_repo = repository_rule(
     )},
 )
 
+# Important note: this dictionary is read and modified by the release script (script/release.py).
+# Therefore, it needs to remain a constant dictionary which can be parsed by the python ast module.
 _ARCHIVES = {
     "presign_perso": {
         "url": "https://github.com/lowRISC/ot-sku/releases/download/FAKE_BUILD_20260518_rc00/presign_perso.tar.xz",
