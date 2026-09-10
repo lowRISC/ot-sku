@@ -1,3 +1,9 @@
+<!--
+# Copyright lowRISC contributors (OpenTitan project).
+# Licensed under the Apache License, Version 2.0, see LICENSE for details.
+# SPDX-License-Identifier: Apache-2.0
+-->
+
 # Open Market SKU Keygen Templates
 
 This subdirectory contains `hsmtool` templates for generating the key material
