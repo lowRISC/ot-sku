@@ -1,5 +1,22 @@
+*~
+*.bak
+*.swp
+*.swo
+tmp.*/
+tags
+
+# Build directories
+build/
+build*/
+
+# Bazel-related cache and output directories
 bazel-*
+
+# Local SoftHSM2 configuration
 skus/open/fake_keygen/softhsm2.conf
+
+# Local binaries and signatures that should not be committed to the codebase.
+# Signatures are expected to be added as part of the release process, but are ignored
+# here to require users to add them with `--force` and promote caution around this step.
 *.bin
 *_sig
-tmp.*/
