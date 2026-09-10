@@ -12,6 +12,11 @@ if [[ -e skus/open/fake_keygen/softhsm2.conf ]]; then
   # NOTE: we're using PKCS#11 elementary files (CKO_DATA objects) to store SLHDSA keys.
   export HSMTOOL_SPX_MODULE=pkcs11-ef
 
+  # Default configuration for the checked-in database (used for **testing only**)
+  export HSMTOOL_TOKEN=temp
+  export HSMTOOL_USER=user
+  export HSMTOOL_PIN=123456
+
   cat >${SOFTHSM2_CONF} <<EOT
 # SoftHSM v2 configuration file
 
