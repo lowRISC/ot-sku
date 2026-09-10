@@ -9,7 +9,7 @@ package(default_visibility = ["//visibility:public"])
 pkg_files(
     name = "file_repo",
     srcs = [
-        "build_bazel",
+        "files_bazel",
         "repo_bazel",
     ],
     renames = {
