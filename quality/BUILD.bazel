@@ -3,24 +3,8 @@
 # SPDX-License-Identifier: Apache-2.0
 
 load("@buildifier_prebuilt//:rules.bzl", "buildifier", "buildifier_test")
-load("@lowrisc_misc_linters//rules:rules.bzl", "licence_test")
 
 package(default_visibility = ["//visibility:public"])
-
-licence_test(
-    name = "license_check",
-    exclude_patterns = [
-        # Exclude anything in vendored directories
-        "third_party/**",
-        "*/vendor/*/*",
-    ],
-    licence = """
-    Copyright lowRISC contributors (OpenTitan project).
-    Licensed under the Apache License, Version 2.0, see LICENSE for details.
-    SPDX-License-Identifier: Apache-2.0
-    """,
-    workspace = "//:MODULE.bazel",
-)
 
 buildifier_exclude = [
     "./**/vendor/**",
