@@ -1,3 +1,9 @@
+<!--
+# Copyright lowRISC contributors (OpenTitan project).
+# Licensed under the Apache License, Version 2.0, see LICENSE for details.
+# SPDX-License-Identifier: Apache-2.0
+-->
+
 # Creating a release
 
 Creating a release of the provisioning and ROM_EXT artifacts is a multi-step process, most of which is automated using Github Actions.

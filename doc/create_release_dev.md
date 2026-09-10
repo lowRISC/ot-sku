@@ -1,3 +1,9 @@
+<!--
+# Copyright lowRISC contributors (OpenTitan project).
+# Licensed under the Apache License, Version 2.0, see LICENSE for details.
+# SPDX-License-Identifier: Apache-2.0
+-->
+
 # Creating a release (developer documentation)
 
 The [release flow](.github/workflows/release.yml) has a few peculiarities which developers should be aware of.

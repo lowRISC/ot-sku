@@ -1,3 +1,9 @@
+<!--
+# Copyright lowRISC contributors (OpenTitan project).
+# Licensed under the Apache License, Version 2.0, see LICENSE for details.
+# SPDX-License-Identifier: Apache-2.0
+-->
+
 # ot-sku
 
 This repository defines the configuration for the OpenTitan Earlgrey Open-Market

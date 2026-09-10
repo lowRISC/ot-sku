@@ -1,3 +1,9 @@
+<!--
+# Copyright lowRISC contributors (OpenTitan project).
+# Licensed under the Apache License, Version 2.0, see LICENSE for details.
+# SPDX-License-Identifier: Apache-2.0
+-->
+
 # DICE CA key and certificate
 
 This subdirectory contains the ECDSA public CA key and a self signed
