@@ -1,0 +1,17 @@
+# Copyright lowRISC contributors (OpenTitan project).
+# Licensed under the Apache License, Version 2.0, see LICENSE for details.
+# SPDX-License-Identifier: Apache-2.0
+
+# Enable bzlmod with `MODULE.bazel` and disable the `WORKSPACE` system.
+common --enable_bzlmod
+common --enable_workspace=no
+
+# Import site-specific local configuration overrides.
+try-import %workspace%/.bazelrc-site
+
+# cquery output option.
+cquery --output=files
+
+# Enable strict action env. This will prevent `PATH` and `LD_LIBRARY_PATH` from being passed into the sandbox
+# which would help the cacheability.
+build --incompatible_strict_action_env
