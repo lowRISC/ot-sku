@@ -22,6 +22,7 @@ keyset(
         "nuvoton-ot00-app-ecdsa-prod-1.pub.der": "nuvoton-ot00-app-ecdsa-prod-1",
         "nuvoton-ot00-app-ecdsa-dev-0.pub.der": "nuvoton-ot00-app-ecdsa-dev-0",
     },
+    keytype = "ecdsa",
     profile = "nuvoton-ot00-app",
     tool = "@lowrisc_opentitan//signing:token",
 )
@@ -34,6 +35,7 @@ keyset(
         "nuvoton-ot00-app-slhdsa-prod-1.pub.pem": "nuvoton-ot00-app-slhdsa-prod-1:domain=PreHashedSha256",
         "nuvoton-ot00-app-slhdsa-dev-0.pub.pem": "nuvoton-ot00-app-slhdsa-dev-0:domain=PreHashedSha256",
     },
+    keytype = "spx",
     profile = "nuvoton-ot00-app",
     tool = "@lowrisc_opentitan//signing:token",
 )

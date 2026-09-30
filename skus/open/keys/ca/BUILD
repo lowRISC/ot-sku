@@ -25,6 +25,7 @@ keyset(
     keys = {
         "nuvoton-ot00-ca-ecdsa-0.pub.der": "nuvoton-ot00-ca-ecdsa-0",
     },
+    keytype = "ecdsa",
     profile = "nuvoton-ot00-ca",
     tool = "@lowrisc_opentitan//signing:token",
 )

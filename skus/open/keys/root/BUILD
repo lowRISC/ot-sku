@@ -22,6 +22,7 @@ keyset(
         "ot00-earlgrey-a2-root-ecdsa-prod-2.pub.der": "ot00-earlgrey-a2-root-ecdsa-prod-2",
         "ot00-earlgrey-a2-root-ecdsa-dev-0.pub.der": "ot00-earlgrey-a2-root-ecdsa-dev-0",
     },
+    keytype = "ecdsa",
     profile = "earlgrey-a2-open-root",
     tool = "@lowrisc_opentitan//signing:token",
 )
@@ -35,6 +36,7 @@ keyset(
         "ot00-earlgrey-a2-root-slhdsa-prod-2.pub.pem": "ot00-earlgrey-a2-root-slhdsa-prod-2:domain=PreHashedSha256",
         "ot00-earlgrey-a2-root-slhdsa-dev-0.pub.pem": "ot00-earlgrey-a2-root-slhdsa-dev-0:domain=PreHashedSha256",
     },
+    keytype = "spx",
     profile = "earlgrey-a2-open-root",
     tool = "@lowrisc_opentitan//signing:token",
 )
