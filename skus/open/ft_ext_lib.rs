@@ -8,6 +8,7 @@ use util_lib::response::PersonalizeResponse;
 
 pub fn ft_inject_certs_ext(_perso_blob_builder: &mut PersoBlobBuilder) -> Result<()> {
     Ok(())
+
 }
 
 pub fn ft_post_boot_ext(_response: &PersonalizeResponse) -> Result<Option<String>> {
