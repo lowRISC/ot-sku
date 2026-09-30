@@ -22,19 +22,25 @@
         },
 
         {
-          "command": "spx-export",
+          "command": "slh-dsa-export",
           label: "nuvoton-ot00-owner-slhdsa-0"
-          filename: "nuvoton-ot00-owner-slhdsa-0.pub.pem"
+          filename: "nuvoton-ot00-owner-slhdsa-0.pub.pem",
+          "private": false,
+          "format": "Pem",
         },
         {
-          "command": "spx-export",
+          "command": "slh-dsa-export",
           label: "nuvoton-ot00-activate-slhdsa-0"
-          filename: "nuvoton-ot00-activate-slhdsa-0.pub.pem"
+          filename: "nuvoton-ot00-activate-slhdsa-0.pub.pem",
+            "private": false,
+          "format": "Pem",
         },
         {
-          "command": "spx-export",
-          label: "nuvoton-ot00-unlock-slhdsa-0"
-          filename: "nuvoton-ot00-unlock-slhdsa-0.pub.pem"
+          "command": "slh-dsa-export",
+          label: "nuvoton-ot00-unlock-slhdsa-0",
+          filename: "nuvoton-ot00-unlock-slhdsa-0.pub.pem",
+          "private": false,
+          "format": "Pem",
         },
 
 

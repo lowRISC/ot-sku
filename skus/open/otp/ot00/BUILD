@@ -44,7 +44,7 @@ otp_json(
                 # Enable AST initialization.
                 "CREATOR_SW_CFG_AST_INIT_EN": otp_hex(CONST.MUBI4_TRUE),
                 "CREATOR_SW_CFG_ROM_EXT_SKU": otp_hex(0x0),
-                # Enable SPX+ signature verification.
+                # Enable SPHINCS+/SLH-DSA signature verification.
                 "CREATOR_SW_CFG_SIGVERIFY_SPX_EN": otp_hex(0x0),
                 # Enable flash data page scrambling and ECC.
                 "CREATOR_SW_CFG_FLASH_DATA_DEFAULT_CFG": otp_hex(0x00090606),

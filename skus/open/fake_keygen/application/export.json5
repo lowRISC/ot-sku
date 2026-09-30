@@ -21,8 +21,26 @@
           "format": "Der",
         },
 
-        // We export the SLH-DSA keys during keygen because the
-        // hsmtool "spx" backend is only capabile of exporting
-        // the private material during keygen.
+        {
+          "command": "slh-dsa-export",
+          "label": "nuvoton-ot00-app-slhdsa-prod-0",
+          "filename": "nuvoton-ot00-app-slhdsa-prod-0.priv.pem",
+          "private": true,
+          "format": "Pem",
+        },
+        {
+          "command": "slh-dsa-export",
+          "label": "nuvoton-ot00-app-slhdsa-prod-1",
+          "filename": "nuvoton-ot00-app-slhdsa-prod-1.priv.pem",
+          "private": true,
+          "format": "Pem",
+        },
+        {
+          "command": "slh-dsa-export",
+          "label": "nuvoton-ot00-app-slhdsa-dev-0",
+          "filename": "nuvoton-ot00-app-slhdsa-dev-0.priv.pem",
+          "private": true,
+          "format": "Pem",
+        },
 
 ]

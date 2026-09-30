@@ -18,7 +18,10 @@ SKU = "ot00"
 offline_presigning_artifacts(
     name = "provisioning_{}".format(SKU),
     testonly = True,
-    srcs = ["@lowrisc_opentitan//sw/device/silicon_creator/manuf/base:ft_personalize_{}".format(SKU)],
+    srcs = [
+        "@lowrisc_opentitan//sw/device/silicon_creator/manuf/base:ft_personalize_{}".format(SKU),
+        "@lowrisc_opentitan//sw/device/silicon_creator/manuf/base:ft_flash_scramble_{}".format(SKU),
+    ],
     ecdsa_key = EXT_EARLGREY_SKUS[SKU]["ecdsa_key"],
     manifest = "@lowrisc_opentitan//sw/device/silicon_creator/manuf/base:manifest_perso",
     spx_key = EXT_EARLGREY_SKUS[SKU]["spx_key"],
@@ -58,7 +61,7 @@ offline_signature_attach(
         "{}:ecdsa_signatures".format(EXT_EARLGREY_SKUS[SKU]["signature_prefix"]),
     ],
     spx_signatures = [
-        "{}:spx_signatures".format(EXT_EARLGREY_SKUS[SKU]["signature_prefix"]),
+        "{}:slh_dsa_signatures".format(EXT_EARLGREY_SKUS[SKU]["signature_prefix"]),
     ],
     tags = ["manual"],
 )

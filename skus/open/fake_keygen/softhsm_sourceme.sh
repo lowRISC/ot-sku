@@ -9,7 +9,9 @@ if [[ -e skus/open/fake_keygen/softhsm2.conf ]]; then
   export SOFTHSM2_CONF=${PWD}/skus/open/fake_keygen/softhsm2.conf
   export HSMTOOL_MODULE=/usr/lib/x86_64-linux-gnu/softhsm/libsofthsm2.so
 
-  # NOTE: we're using PKCS#11 elementary files (CKO_DATA objects) to store SLHDSA keys.
+  # If we want to use any SPHINCS+ keys (distinct from SLH-DSA keys), we must set the
+  # SPX_MODULE to be used. Note that for any SPHINCS+ keys that are stored in the token,
+  # PKCS#11 elementary files (CKO_DATA objects) are used to store the key material.
   export HSMTOOL_SPX_MODULE=pkcs11-ef
 
   # Default configuration for the checked-in database (used for **testing only**)

@@ -22,6 +22,7 @@ keyset(
         "ot00-earlgrey-a2-root-ecdsa-prod-2.pub.der": "ot00-earlgrey-a2-root-ecdsa-prod-2",
         "ot00-earlgrey-a2-root-ecdsa-dev-0.pub.der": "ot00-earlgrey-a2-root-ecdsa-dev-0",
     },
+    keytype = "ecdsa",
     profile = "earlgrey-a2-open-root",
     tool = "@lowrisc_opentitan//signing:token",
 )
@@ -35,12 +36,11 @@ keyset(
         "ot00-earlgrey-a2-root-slhdsa-prod-2.pub.pem": "ot00-earlgrey-a2-root-slhdsa-prod-2:domain=PreHashedSha256",
         "ot00-earlgrey-a2-root-slhdsa-dev-0.pub.pem": "ot00-earlgrey-a2-root-slhdsa-dev-0:domain=PreHashedSha256",
     },
+    keytype = "slh-dsa",
     profile = "earlgrey-a2-open-root",
     tool = "@lowrisc_opentitan//signing:token",
 )
 
-# TODO: add key material in OTP representation.
-# TODO: I think the `TEST` keys should be `DEV`.
 otp_json_rot_keys(
     name = "root_keys",
     partitions = [
@@ -48,41 +48,41 @@ otp_json_rot_keys(
             name = "ROT_CREATOR_AUTH_CODESIGN",
             items = {
                 # ecdsa OTP values created with `opentitantool ecdsa key show <key>`
-                # ot00-earlgrey-a2-root-ecdsa-prod-0.pub.pem
+                # ot00-earlgrey-a2-root-ecdsa-prod-0.pub.der
                 "ROT_CREATOR_AUTH_CODESIGN_ECDSA_KEY_TYPE0": otp_hex(CONST.SIGVERIFY.KEY_TYPE.PROD),
-                "ROT_CREATOR_AUTH_CODESIGN_ECDSA_KEY0": "0x449b283f7d6d6e0d421443b0d3856e4e3d0b6996d6b3130793a3208f867e0bfd2da0093b1629eec5f2bba75f5c6c7aa573b436ccc4df5e6505b0a43f920b4047",
+                "ROT_CREATOR_AUTH_CODESIGN_ECDSA_KEY0": "0x1c04eb39d9d19da733256ddc365088f94bf9a94ed1ebdcade3b9f5250a8bd4c88ba433f75649dc67eca767597130355226bbee75debe78bfb9613c5d73fbbf0c",
 
-                # ot00-earlgrey-a2-root-ecdsa-prod-1.pub.pem
+                # ot00-earlgrey-a2-root-ecdsa-prod-1.pub.der
                 "ROT_CREATOR_AUTH_CODESIGN_ECDSA_KEY_TYPE1": otp_hex(CONST.SIGVERIFY.KEY_TYPE.PROD),
-                "ROT_CREATOR_AUTH_CODESIGN_ECDSA_KEY1": "0x6edd3cb1162333c7ea35adbd57669486f68929c27e062cc19fecbbad06445278ed56b87d5e774a6c62eeff5a62ff04f653cac5b45024befeea9073f37a9529cf",
+                "ROT_CREATOR_AUTH_CODESIGN_ECDSA_KEY1": "0xf1b2aab7ff1f18a9d43f842b8b840c79ddc1da2de8db26cea6d5cc8f70f81194f14189351cc160ebd147327e4cc01c526693eaf5d890576d4b0f83bd1569d29e",
 
-                # ot00-earlgrey-a2-root-ecdsa-prod-2.pub.pem
+                # ot00-earlgrey-a2-root-ecdsa-prod-2.pub.der
                 "ROT_CREATOR_AUTH_CODESIGN_ECDSA_KEY_TYPE2": otp_hex(CONST.SIGVERIFY.KEY_TYPE.PROD),
-                "ROT_CREATOR_AUTH_CODESIGN_ECDSA_KEY2": "0x65b31f407cacfcdea2a96bc7dd545c596292d1245524214112bd21bf31e9fb733258988ef8f3db0afe59a3b7355eaf33a8a8e91586d200c2995fcd9a859aa475",
+                "ROT_CREATOR_AUTH_CODESIGN_ECDSA_KEY2": "0xf4659f9f9425c19c8bb6ce3c3877936eb211574cd1011700ef8d6c97de142bef483eb38c3c56cd3321f00046a0a1dd58334589ae0010246bebd1dab26d128de0",
 
-                # ot00-earlgrey-a2-root-ecdsa-dev-0.pub.pem
+                # ot00-earlgrey-a2-root-ecdsa-dev-0.pub.der
                 "ROT_CREATOR_AUTH_CODESIGN_ECDSA_KEY_TYPE3": otp_hex(CONST.SIGVERIFY.KEY_TYPE.TEST),
-                "ROT_CREATOR_AUTH_CODESIGN_ECDSA_KEY3": "0xd824d4a5239c3053aed648ba5d8f77a32b4f423fa6452989a617af7c3575e9e6b2bb1e82b15793abef71bfc10a1d2d4f327063d60a549dd69c0d7a3604f91da5",
+                "ROT_CREATOR_AUTH_CODESIGN_ECDSA_KEY3": "0x5b42287ff8463b12e686b60279f1c9a8370f01dafb673cc326e64431edbd29844f75b5db48ec5a487e5d9d36a63e62c890d2602ac7ecb9d85c4c9bd016be162e",
 
                 # slhdsa OTP values created with `opentitantool spx key show <key>`
                 # ot00-earlgrey-a2-root-slhdsa-prod-0.pub.pem
                 "ROT_CREATOR_AUTH_CODESIGN_SPX_KEY_TYPE0": otp_hex(CONST.SIGVERIFY.KEY_TYPE.PROD),
-                "ROT_CREATOR_AUTH_CODESIGN_SPX_KEY0": "0x5343018c9c679feb5b6c1b9a11a408a2817780835f7dfb6e902bb3f2623ddf94",
+                "ROT_CREATOR_AUTH_CODESIGN_SPX_KEY0": "0x8a23a0ea1a825290e4bd61f5c3792e5399675a41f68e672eb657167e0fe263ee",
                 "ROT_CREATOR_AUTH_CODESIGN_SPX_KEY_CONFIG0": otp_hex(CONST.SPX_CONFIG_ID.SHA2_128S_PREHASH),
 
                 # ot00-earlgrey-a2-root-slhdsa-prod-1.pub.pem
                 "ROT_CREATOR_AUTH_CODESIGN_SPX_KEY_TYPE1": otp_hex(CONST.SIGVERIFY.KEY_TYPE.PROD),
-                "ROT_CREATOR_AUTH_CODESIGN_SPX_KEY1": "0x3a3db784138bf45e6411d31cb9aaf235f16746dbfdace0425319375b9a92fe25",
+                "ROT_CREATOR_AUTH_CODESIGN_SPX_KEY1": "0x8bb4673c2235ed4a7b2ae48ba50fffec77c651e7bd9a40cffc629ee745498882",
                 "ROT_CREATOR_AUTH_CODESIGN_SPX_KEY_CONFIG1": otp_hex(CONST.SPX_CONFIG_ID.SHA2_128S_PREHASH),
 
                 # ot00-earlgrey-a2-root-slhdsa-prod-2.pub.pem
                 "ROT_CREATOR_AUTH_CODESIGN_SPX_KEY_TYPE2": otp_hex(CONST.SIGVERIFY.KEY_TYPE.PROD),
-                "ROT_CREATOR_AUTH_CODESIGN_SPX_KEY2": "0x31989d4779936c6bfb0d280160426d7eeb28330a00f8ccbaf9a53a957f5b43d5",
+                "ROT_CREATOR_AUTH_CODESIGN_SPX_KEY2": "0x3d803f6fd9daf4b660b279ed08c8c8954f99abe6ba8f936436681830dee816f0",
                 "ROT_CREATOR_AUTH_CODESIGN_SPX_KEY_CONFIG2": otp_hex(CONST.SPX_CONFIG_ID.SHA2_128S_PREHASH),
 
                 # ot00-earlgrey-a2-root-slhdsa-dev-0.pub.pem
                 "ROT_CREATOR_AUTH_CODESIGN_SPX_KEY_TYPE3": otp_hex(CONST.SIGVERIFY.KEY_TYPE.TEST),
-                "ROT_CREATOR_AUTH_CODESIGN_SPX_KEY3": "0x16e81526e12922bfbbe36754bc111b4e34a5a1bbb5bdaf34c385d368333aa977",
+                "ROT_CREATOR_AUTH_CODESIGN_SPX_KEY3": "0x9577ad5c5d03d7d4860c2b6a2501e7ea5982e0555520c2b0b845a5b3587cb0cf",
                 "ROT_CREATOR_AUTH_CODESIGN_SPX_KEY_CONFIG3": otp_hex(CONST.SPX_CONFIG_ID.SHA2_128S_PREHASH),
             },
         ),
