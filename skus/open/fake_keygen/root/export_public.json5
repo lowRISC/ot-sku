@@ -30,24 +30,32 @@
 
 
         {
-          "command": "spx-export",
+          "command": "slh-dsa-export",
           "label": "ot00-earlgrey-a2-root-slhdsa-prod-0",
           "filename": "ot00-earlgrey-a2-root-slhdsa-prod-0.pub.pem",
+          "private": false,
+          "format": "Pem",
         },
         {
-          "command": "spx-export",
+          "command": "slh-dsa-export",
           "label": "ot00-earlgrey-a2-root-slhdsa-prod-1",
           "filename": "ot00-earlgrey-a2-root-slhdsa-prod-1.pub.pem",
+          "private": false,
+          "format": "Pem",
         },
         {
-          "command": "spx-export",
+          "command": "slh-dsa-export",
           "label": "ot00-earlgrey-a2-root-slhdsa-prod-2",
           "filename": "ot00-earlgrey-a2-root-slhdsa-prod-2.pub.pem",
+          "private": false,
+          "format": "Pem",
         },
         {
-          "command": "spx-export",
+          "command": "slh-dsa-export",
           "label": "ot00-earlgrey-a2-root-slhdsa-dev-0",
           "filename": "ot00-earlgrey-a2-root-slhdsa-dev-0.pub.pem",
+          "private": false,
+          "format": "Pem",
         },
 
 ]

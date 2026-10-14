@@ -14,8 +14,10 @@ filegroup(
 
 filegroup(
     name = "spx_signatures",
+    # SPHINCS+ & SLH-DSA signatures are consumed via the `spx_signatures` target by
+    # upstream OpenTitan signing rules. This SKU uses SLH-DSA keys.
     srcs = glob(
-        ["*.spx_sig"],
+        ["*.slh_dsa_sig"],
         allow_empty = True,
     ),
 )

@@ -65,7 +65,7 @@ opentitan_binary(
     ],
     manifest = ":manifest_open",
     spx_key = select({
-        "@lowrisc_opentitan//signing:test_keys": {"@lowrisc_opentitan//sw/device/silicon_creator/rom/keys/fake/spx:spx_keyset": "prod_key_0"},
+        "@lowrisc_opentitan//signing:test_keys": {"@lowrisc_opentitan//sw/device/silicon_creator/rom/keys/fake/slh_dsa:slh_dsa_keyset": "prod_key_0"},
         "//conditions:default": EXT_EARLGREY_SKUS[SKU]["spx_key"],
     }),
     deps = [
