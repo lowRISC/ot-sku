@@ -19,7 +19,7 @@ sku_cfg(
     testonly = True,
     dice_ca = "@lowrisc_opentitan//sw/host/provisioning/orchestrator/configs/skus:emulation_dice_ca",
     ext_ca = "@lowrisc_opentitan//sw/host/provisioning/orchestrator/configs/skus:emulation_ext_ca",
-    otp = "em00",
+    otp = "oe00",
     owner_fw_boot_str = "Bare metal PASS!",
     package = "npcr13",
     perso_bin_suffix = "ft_personalize_{sku}_{target}.prod_key_0.prod_key_0.signed.bin",

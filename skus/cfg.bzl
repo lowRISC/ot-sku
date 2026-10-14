@@ -4,6 +4,7 @@
 
 EXT_EARLGREY_OTP_CFGS = {
     "ot00": "@provisioning_exts//open/otp/ot00:otp_consts",
+    "oe00": "@provisioning_exts//open/otp/ot00_emulation:otp_consts",
 }
 
 EXT_EARLGREY_SKUS = {
@@ -11,7 +12,7 @@ EXT_EARLGREY_SKUS = {
     # Emulation SKUs
     ############################################################################
     "emulation_open": {
-        "otp": "em00",
+        "otp": "oe00",
         "ca_data": "@lowrisc_opentitan//sw/device/silicon_creator/manuf/keys/fake:ca_data",
         "dice_libs": ["@lowrisc_opentitan//sw/device/silicon_creator/lib/cert:dice", "@lowrisc_opentitan//sw/device/silicon_creator/lib/cert:dice_mldsa_empty"],
         "host_ext_libs": ["@provisioning_exts//open:ft_ext_lib"],
@@ -19,8 +20,8 @@ EXT_EARLGREY_SKUS = {
         "ownership_libs": ["@lowrisc_opentitan//sw/device/silicon_creator/lib/ownership:test_owner"],
         "rom_ext": "@lowrisc_opentitan//sw/device/silicon_creator/rom_ext:rom_ext_dice_x509_slot_virtual",
         "owner_fw": "@lowrisc_opentitan//sw/device/silicon_owner/bare_metal:bare_metal_slot_b",
-        "ecdsa_key": {},
-        "spx_key": {},
+        "ecdsa_key": {"@lowrisc_opentitan//sw/device/silicon_creator/lib/ownership/keys/fake:ecdsa_keyset": "app_prod_0"},
+        "spx_key": {"@lowrisc_opentitan//sw/device/silicon_creator/lib/ownership/keys/fake:slh_dsa_keyset": "app_prod_0"},
         "signature_prefix": None,
         "orchestrator_cfg": "@provisioning_exts//open/orchestrator:emulation_open",
     },

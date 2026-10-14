@@ -2,7 +2,7 @@
 # Licensed under the Apache License, Version 2.0, see LICENSE for details.
 # SPDX-License-Identifier: Apache-2.0
 
-# SKU: OT__.
+# SKU: OE00 (`emulation_open` for `ot00`).
 # Version: 00.
 
 load(
@@ -23,7 +23,8 @@ otp_c_lib_and_personalized_images(
         "@provisioning_exts//open/otp/ot00:otp_json_creator_sw_cfg",
         "@provisioning_exts//open/otp/ot00:otp_json_owner_sw_cfg",
         "@provisioning_exts//open/otp/ot00:alert_digest_cfg",
-        # TODO: replace with your fake keys
+        # For the Emulation Open SKU, fake keys for signing are sourced from
+        # OpenTitan, so we also source the `ROT_CREATOR_AUTH_*` OTP config from there.
         "@lowrisc_opentitan//sw/device/silicon_creator/rom/keys/fake/otp:json_rot_keys",
     ],
 )
