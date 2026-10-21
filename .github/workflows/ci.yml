@@ -41,3 +41,15 @@ jobs:
             echo "Regenerate this lock file using \`bazelisk mod deps\`" >&2
             exit 1
           fi
+
+  release-check:
+    name: Test release workflow
+    #needs: lint-check
+    uses: ./.github/workflows/test-release.yml
+    with:
+      testing_repository: lowRISC/ot-sku-testing
+      # Use a unique name per-PR/push and also make it unique per run
+      testing_name: ot-sku-test-release-${{ github.event.number || github.event.after }}-run-${{ github.run_attempt }}
+      sha: ${{ github.sha }}
+    secrets:
+      testing_repo_token: ${{ github.token }}
