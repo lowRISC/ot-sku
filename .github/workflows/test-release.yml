@@ -1,0 +1,57 @@
+# Copyright lowRISC contributors (OpenTitan project).
+# Licensed under the Apache License, Version 2.0, see LICENSE for details.
+# SPDX-License-Identifier: Apache-2.0
+
+# This release test workflow is not meant to be run directly on the ot-sku repository
+# since it creates testing branches and releases. Instead, test-release-ci.yml triggers
+# a cross-ci run on lowRISC/ot-sku-testing which will replicate the content of the ot-sku
+# repository and then run this workflow on ot-sku-testing.
+name: Test release workflow
+on:
+  workflow_dispatch:
+    inputs:
+      testing_branch:
+        description: Name of the testing branch to run the flow on
+        type: string
+
+jobs:
+  e2e_release_test:
+    name: Test release workflow
+    runs-on: ubuntu-24.04
+    permissions:
+      # Used to trigger the test release flow.
+      actions: write
+    steps:
+      - name: Run pre-sign
+        id: presign
+        env:
+          # We need a token with sufficient privilege to trigger a workflow dispatch.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TESTING_BRANCH: ${{ inputs.testing_branch }}
+        run: |
+          set -e
+          echo "workflow_info<<EOF" >> $GITHUB_OUTPUT
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2026-03-10" \
+            "/repos/${{ github.repository }}/actions/workflows/pre-sign-release.yml/dispatches" \
+            -f "ref=refs/heads/$TESTING_BRANCH" \
+            -f "inputs[release_tag]=PRESIGN_$TESTING_BRANCH" \
+            -f "inputs[create_branch]=presign_branch_$TESTING_BRANCH" >> $GITHUB_OUTPUT
+          echo "" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Display pre-sign workflow link
+        env:
+          PRESIGN_WORKFLOW_URL: ${{ fromJSON(steps.presign.outputs.workflow_info).html_url }}
+        run: |
+          echo "Pre-sign release workflow: $PRESIGN_WORKFLOW_URL" >> $GITHUB_STEP_SUMMARY
+
+      - name: Wait for pre-sign to finish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PRESIGN_WORKFLOW_RUNID: ${{ fromJSON(steps.presign.outputs.workflow_info).workflow_run_id }}
+          GITHUB_REPO: ${{ github.repository }}
+        run: |
+          gh run watch -R "$GITHUB_REPO" "$PRESIGN_WORKFLOW_RUNID"

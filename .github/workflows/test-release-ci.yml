@@ -1,0 +1,55 @@
+# Copyright lowRISC contributors (OpenTitan project).
+# Licensed under the Apache License, Version 2.0, see LICENSE for details.
+# SPDX-License-Identifier: Apache-2.0
+
+# Copyright lowRISC Contributors (OpenTitan project).
+# Licensed under the Apache License, Version 2.0, see LICENSE for details.
+# SPDX-License-Identifier: Apache-2.0
+
+name: Test release workflow CI
+
+on:
+  push:
+    branches: ["*"]
+  # This is required to get a token with write permissions.
+  pull_request_target:
+    branches: ["*"]
+
+concurrency:
+  group: fpga-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write # For repository dispatch
+
+jobs:
+  test-release:
+    runs-on: "ubuntu-24.04"
+    # The cross-ci mechanism checks the origin of the request, only ot-sku is allowed.
+    if: github.repository == 'lowRISC/ot-sku'
+    steps:
+      # Trigger a cross-repo CI run on the ot-sku-testing repository. The repository will then create a branch
+      # which will match exactly the SHA of this push/pull_request. It will then trigger a workflow dispatch
+      # of the test-release.yml in this repository.
+      - name: Run test release workflow
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
+        with:
+          script: |
+            const payload = {
+              sha: context.eventName === 'pull_request_target' ? context.payload.pull_request.head.sha : context.sha,
+              pull_request: context.issue.number,
+              inputs: {
+                testing_branch: "ot-sku-test-release-".concat(context.eventName === 'pull_request_target' ? context.payload.pull_request.number : context.sha, "-run-", context.runAttempt),
+                run_name: context.eventName === 'pull_request_target' ? context.payload.pull_request.title : context.payload.head_commit.message.split('\n')[0],
+              },
+            };
+            await github.rest.repos.createDispatchEvent({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              event_type: 'cross-repo-ci',
+              client_payload: {
+                ...payload,
+                target: `${context.repo.owner}/ot-sku-testing/main/trigger-test-release.yml`,
+              }
+            });
+
