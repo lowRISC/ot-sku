@@ -1,0 +1,42 @@
+# Copyright lowRISC contributors (OpenTitan project).
+# Licensed under the Apache License, Version 2.0, see LICENSE for details.
+# SPDX-License-Identifier: Apache-2.0
+
+# This release test workflow is not meant to be run directly on the ot-sku repository
+# since it creates testing branches and releases. Instead, test-release-ci.yml triggers
+# a cross-ci run on lowRISC/ot-sku-testing which will replicate the content of the ot-sku
+# repository and then run this workflow on ot-sku-testing.
+name: Test release workflow
+on:
+  workflow_dispatch:
+    inputs:
+      testing_branch:
+        description: Name of the testing branch to run the flow on
+        type: string
+
+jobs:
+  e2e_release_test:
+    name: Test release workflow
+    runs-on: ubuntu-24.04
+    permissions:
+      # Used to trigger the test release flow.
+      actions: write
+    steps:
+      - name: Run pre-sign
+        env:
+          # We need a token with sufficient privilege to trigger a workflow dispatch.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2026-03-10" \
+            "/repos/${{ github.repository }}/actions/workflows/release.yml/dispatches" \
+            -f "ref=refs/heads/${{ inputs.testing_branch }}" \
+            -f "inputs[release_tag]=PRESIGN_${{ inputs.testing_branch }}" \
+            -f "inputs[release_type]=pre-sign" \
+            -f "inputs[release_branch]=${{ inputs.testing_branch }}-release" \
+            -f "inputs[release_notes]=Testing ${{ inputs.testing_branch }}" \
+            -f "inputs[release_title]=PRESIGN_${{ inputs.testing_branch }}" \
+            | tee out.txt
+          echo "Pre-sign release workflow: $(jq --raw-output .html_url out.txt)" >> $GITHUB_STEP_SUMMARY

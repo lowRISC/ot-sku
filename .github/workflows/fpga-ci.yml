@@ -21,6 +21,8 @@ permissions:
 jobs:
   fpga-manuf:
     runs-on: "ubuntu-24.04"
+    # The cross-ci mechanism checks the origin of the request, only ot-sku is allowed.
+    if: github.repository == 'lowRISC/ot-sku'
     steps:
       # Trigger a cross-repo CI run on the Opentitan repository to run some FPGA tests
       - name: Run FPGA manufacturing tests
