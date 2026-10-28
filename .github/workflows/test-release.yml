@@ -1,0 +1,39 @@
+# Copyright lowRISC contributors (OpenTitan project).
+# Licensed under the Apache License, Version 2.0, see LICENSE for details.
+# SPDX-License-Identifier: Apache-2.0
+
+name: Test release workflow
+on:
+  workflow_call:
+    inputs:
+      testing_repository:
+        description: repository to use for testing, must be a fork of ot-sku, format is OWNER/REPO
+        type: string
+      testing_name:
+        description: name used to derive everything (branch name, release name, etc), should be unique per-PR
+        type: string
+      sha:
+        description: SHA of the commit which should be tested
+        type: string
+    secrets:
+      testing_repo_token:
+        description: token to be used to access the testing repository
+
+jobs:
+  e2e_release_test:
+    name: Test release workflow
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - name: Sync testing branch
+        env:
+          GH_TOKEN: ${{ secrets.testing_repo_token }}
+        run: |
+          # Create a branch on the testing repository which matches with this.
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2026-03-10" \
+            /repos/${{ inputs.testing_repository }}/git/refs \
+            -f "ref=refs/heads/${{ inputs.testing_name }}" \
+            -f 'sha=${{ inputs.sha }}'
