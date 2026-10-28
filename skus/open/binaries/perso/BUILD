@@ -5,8 +5,12 @@
 load("@lowrisc_opentitan//rules:files.bzl", "copy_files")
 load("@lowrisc_opentitan//rules:signing.bzl", "signature_test")
 load("@lowrisc_opentitan//rules/opentitan:cc.bzl", "exec_env_filegroup")
+load("@provisioning_exts//:cfg.bzl", "EXT_EARLGREY_SKUS")
 
 package(default_visibility = ["//visibility:public"])
+
+# TODO: we probably don't want to hardcode a specific SKU everywhere...
+SKU = "ot00"
 
 copy_files(
     name = "copy_signed",
@@ -24,15 +28,20 @@ copy_files(
     workspace_env = "PROV_EXTS_DIR",
 )
 
-#signature_test(
-#    name = "signature_test",
-#    srcs = [
-#        # TODO: reference files
-#    ],
-#    ecdsa_key = {
-#        # TODO: reference keyset and keys
-#    }
-#)
+signature_test(
+    name = "signature_test",
+    srcs = [
+        "@provisioning_exts_extra//perso_release:ft_flash_scramble_ot00_fpga_cw340_rom_with_fake_keys.signed.bin",
+        "@provisioning_exts_extra//perso_release:ft_flash_scramble_ot00_fpga_hyper310_rom_with_fake_keys.signed.bin",
+        "@provisioning_exts_extra//perso_release:ft_flash_scramble_ot00_silicon_creator.signed.bin",
+        "@provisioning_exts_extra//perso_release:ft_personalize_ot00_fpga_cw340_rom_with_fake_keys.signed.bin",
+        "@provisioning_exts_extra//perso_release:ft_personalize_ot00_fpga_hyper310_rom_with_fake_keys.signed.bin",
+        "@provisioning_exts_extra//perso_release:ft_personalize_ot00_silicon_creator.signed.bin",
+    ],
+    ecdsa_key = EXT_EARLGREY_SKUS[SKU]["ecdsa_key"],
+    spx_key = EXT_EARLGREY_SKUS[SKU]["spx_key"],
+    tags = ["manual"],
+)
 
 exec_env_filegroup(
     name = "ft_personalize_ot00",

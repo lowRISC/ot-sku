@@ -4,6 +4,7 @@
 
 EXT_EARLGREY_OTP_CFGS = {
     "ot00": "@provisioning_exts//open/otp/ot00:otp_consts",
+    "oe00": "@provisioning_exts//open/otp/ot00_emulation:otp_consts",
 }
 
 EXT_EARLGREY_SKUS = {
@@ -11,7 +12,7 @@ EXT_EARLGREY_SKUS = {
     # Emulation SKUs
     ############################################################################
     "emulation_open": {
-        "otp": "em00",
+        "otp": "oe00",
         "ca_data": "@lowrisc_opentitan//sw/device/silicon_creator/manuf/keys/fake:ca_data",
         "dice_libs": ["@lowrisc_opentitan//sw/device/silicon_creator/lib/cert:dice", "@lowrisc_opentitan//sw/device/silicon_creator/lib/cert:dice_mldsa_empty"],
         "host_ext_libs": ["@provisioning_exts//open:ft_ext_lib"],
