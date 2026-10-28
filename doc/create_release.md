@@ -31,6 +31,8 @@ This step is completely automated using Github Actions.
 ## Step 2: signing the artifacts
 
 Signing the artifacts is a manual step that typically occurs in an offline environment.
+For a formal signing ceremony, please follow the guidance in [`doc/signing_ceremonies.md`](./signing_ceremonies.md).
+The following guidance can be taken as an illustrative example used with SoftHSM for test flows.
 The `presign_perso.tar.xz` and `presign_rom_ext.tar.xz` archives provided by the release contain the digests and relevant `hsmtool` instructions to execute.
 This flow typically looks like this:
 ```bash
@@ -39,7 +41,7 @@ export OT_SKU=ot00
 export OT_SKU_PATH=/path/to/your/ot-sku
 export HSMTOOL=/path/to/your/hsmtool
 
-# Setup your hsmtool environment to use either SoftHSM or a real HSM.
+# Setup your hsmtool environment to use SoftHSM.
 # Download presign_perso.tar.xz and presign_rom_ext.tar.xz from the pre-signing release created in step (1) and verify their hashes.
 # When you are happy with the contents and have prepared your environment, extract the archives:
 mkdir presign_perso presign_rom_ext
