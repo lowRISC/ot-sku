@@ -1,0 +1,81 @@
+# Copyright lowRISC contributors (OpenTitan project).
+# Licensed under the Apache License, Version 2.0, see LICENSE for details.
+# SPDX-License-Identifier: Apache-2.0
+
+name: Create a post-sign release
+on:
+  workflow_dispatch:
+    inputs:
+      presign_release_tag:
+        description: GitHub release tag of the pre-sign release
+        required: true
+        type: string
+      release_tag:
+        description: GitHub release tag
+        required: true
+        type: string
+      create_branch:
+        description: Name of the branch to create (optional)
+        default: ''
+        type: string
+
+jobs:
+  release:
+    # Note: use the same runner as OpenTitan (see below).
+    runs-on: ubuntu-22.04
+    permissions:
+      # Necessary to create a release.
+      contents: write
+    steps:
+      - name: Checkout (ot-sku)
+        uses: actions/checkout@v6
+        with:
+          path: ot-sku
+
+      - name: Download pre-sign release info
+        id: presign-release-info
+        env:
+          PRESIGN_RELEASE_TAG: ${{ inputs.presign_release_tag }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        working-directory: ot-sku
+        run: |
+          echo "release_info<<EOF" >> $GITHUB_OUTPUT
+          gh release download "$PRESIGN_RELEASE_TAG" -p release_info.json -O - >> $GITHUB_OUTPUT
+          echo "" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      # Also checkout OT repository
+      - name: Checkout (opentitan)
+        uses: actions/checkout@v6
+        with:
+          repository: ${{ fromJSON(steps.presign-release-info.outputs.release_info).ot_repo }}
+          ref: ${{ fromJSON(steps.presign-release-info.outputs.release_info).ot_head }}
+          fetch-depth: 0 # Bitstream cache requires all commits.
+          path: opentitan
+
+      # Prepare environment using OpenTitan's CI action.
+      - name: Prepare environment
+        uses: ./opentitan/.github/actions/prepare-env
+        with:
+          working-directory: opentitan
+
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PRESIGN_RELEASE_TAG: ${{ inputs.presign_release_tag }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
+          CREATE_BRANCH: ${{ inputs.create_branch }}
+        run: |
+          RELEASE_OPTS=("--gha-console")
+          if [ -n "$CREATE_BRANCH" ]
+          then
+            RELEASE_OPTS+=("--create-branch" "$CREATE_BRANCH")
+          fi
+          ot-sku/scripts/release.py \
+            ${RELEASE_OPTS[@]} \
+            --verbose \
+            --post-sign="$PRESIGN_RELEASE_TAG" \
+            --ot-repo opentitan \
+            --release-title "$RELEASE_TAG" \
+            --release-notes "$RELEASE_TAG" \
+            "$RELEASE_TAG"
