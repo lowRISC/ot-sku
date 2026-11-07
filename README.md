@@ -85,4 +85,5 @@ Unless otherwise noted, everything in this repository is covered by the Apache L
 
 * [Contribution Guide](CONTRIBUTING.md)
 * [Guidance for reporting security vulnerabilities](https://github.com/lowRISC/opentitan/blob/master/SECURITY.md)
+* [Documentation on SKUs](doc/skus.md)
 * [Guidance for creating release flows](doc/create_release.md)

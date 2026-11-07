@@ -48,6 +48,18 @@ Once the script completes, you can examine the files left in each of the `root`,
   public keys (respectively).
 - There will be a pair of TAR archives with the private and public key material.
 
+See more relevant documentation about then propagating the key changes into the SKU in [`doc/key_management.md`](../../../doc/key_management.md).
+
+### Rotating & re-generating keys
+
+Since the default key generation templates define `CKA_DESTROYABLE: false`, you cannot simply destroy a key and re-use its label.
+To rotate keys, one option would be to manually modify the key generation files to make the labels unique (for example by adding an `-id` suffix denoting the generation).
+For SoftHSM, it is recommended to:
+
+1. Remove the old token: `rm -rf skus/open/fake_keygen/data/*`.
+2. Initialize a fresh token, as above: `./init_softhsm.sh`.
+3. Generate and export everything, as above: `./keygen_and_export.sh`
+
 ## TODOs
 
 1. Learn how to execute the templates on a real HSM rather than SoftHSM (for
