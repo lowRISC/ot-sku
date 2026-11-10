@@ -39,10 +39,7 @@ def print_error(pargs, msg):
 def print_debug(pargs, msg):
     if not msg or pargs.verbose < 1:
         return
-    if pargs.gha_console:
-        print(f"::debug::{msg}")
-    else:
-        print(f"debug: {msg}")
+    print(f"debug: {msg}")
 
 
 def print_group(pargs, name, content):
