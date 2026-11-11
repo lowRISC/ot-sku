@@ -7,6 +7,7 @@ EXT_EARLGREY_OTP_CFGS = {
     "oe00": "@provisioning_exts//open/otp/ot00_emulation:otp_consts",
 }
 
+# TODO: migrate these SKUs to use DICE ML-DSA
 EXT_EARLGREY_SKUS = {
     ############################################################################
     # Emulation SKUs
@@ -14,7 +15,7 @@ EXT_EARLGREY_SKUS = {
     "emulation_open": {
         "otp": "oe00",
         "ca_data": "@lowrisc_opentitan//sw/device/silicon_creator/manuf/keys/fake:ca_data",
-        "dice_libs": ["@lowrisc_opentitan//sw/device/silicon_creator/lib/cert:dice", "@lowrisc_opentitan//sw/device/silicon_creator/lib/cert:dice_mldsa_empty"],
+        "dice_format": "x509",
         "host_ext_libs": ["@provisioning_exts//open:ft_ext_lib"],
         "device_ext_libs": ["@provisioning_exts//open:personalize_fw_ext"],
         "ownership_libs": ["@lowrisc_opentitan//sw/device/silicon_creator/lib/ownership:test_owner"],
@@ -37,7 +38,7 @@ EXT_EARLGREY_SKUS = {
     "ot00_staging": {
         "otp": "ot00",
         "ca_data": "@lowrisc_opentitan//sw/device/silicon_creator/manuf/keys/fake:ca_data",
-        "dice_libs": ["@lowrisc_opentitan//sw/device/silicon_creator/lib/cert:dice", "@lowrisc_opentitan//sw/device/silicon_creator/lib/cert:dice_mldsa_empty"],
+        "dice_format": "x509",
         "host_ext_libs": ["@provisioning_exts//open:ft_ext_lib"],
         "device_ext_libs": ["@provisioning_exts//open:personalize_fw_ext"],
         "ownership_libs": ["@provisioning_exts//open/rom_ext:owner"],
@@ -54,7 +55,7 @@ EXT_EARLGREY_SKUS = {
     "ot00": {
         "otp": "ot00",
         "ca_data": "@provisioning_exts//open/keys/ca:ca_data",
-        "dice_libs": ["@lowrisc_opentitan//sw/device/silicon_creator/lib/cert:dice", "@lowrisc_opentitan//sw/device/silicon_creator/lib/cert:dice_mldsa_empty"],
+        "dice_format": "x509",
         "host_ext_libs": ["@provisioning_exts//open:ft_ext_lib"],
         "device_ext_libs": ["@provisioning_exts//open:personalize_fw_ext"],
         "ownership_libs": ["@provisioning_exts//open/rom_ext:owner"],
