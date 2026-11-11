@@ -1,0 +1,96 @@
+# Copyright lowRISC contributors (OpenTitan project).
+# Licensed under the Apache License, Version 2.0, see LICENSE for details.
+# SPDX-License-Identifier: Apache-2.0
+
+name: Create a pre-sign release
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: GitHub release tag
+        required: true
+        type: string
+      create_branch:
+        description: Name of the branch to create (optional)
+        default: ''
+        type: string
+      artifact_perso:
+        description: Release the `perso` artifact?
+        required: true
+        type: boolean
+        default: true
+      artifact_rom_ext:
+        description: Release the `rom_ext` artifact?
+        required: true
+        type: boolean
+        default: true
+      ot_repo:
+        description: Opentitan repository to checkout
+        required: true
+        type: string
+        default: lowRISC/opentitan
+      ot_ref:
+        description: Git branch or commit hash to checkout (opentitan)
+        required: true
+        type: string
+        default: earlgrey_1.0.0
+
+jobs:
+  release:
+    # Note: use the same runner as OpenTitan (see below).
+    runs-on: ubuntu-22.04
+    permissions:
+      # Necessary to create a release.
+      contents: write
+    steps:
+      - name: Checkout (ot-sku)
+        uses: actions/checkout@v6
+        with:
+          path: ot-sku
+
+      # Also checkout OT repository
+      - name: Checkout (opentitan)
+        uses: actions/checkout@v6
+        with:
+          repository: ${{ inputs.ot_repo }}
+          ref: ${{ inputs.ot_ref }}
+          fetch-depth: 0 # Bitstream cache requires all commits.
+          path: opentitan
+
+      # Prepare environment using OpenTitan's CI action.
+      - name: Prepare environment
+        uses: ./opentitan/.github/actions/prepare-env
+        with:
+          working-directory: opentitan
+
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
+          CREATE_BRANCH: ${{ inputs.create_branch }}
+        run: |
+          RELEASE_OPTS=("--gha-console")
+          ARTIFACT_PERSO="${{ inputs.artifact_perso && 'true' || 'false' }}"
+          ARTIFACT_ROM_EXT="${{ inputs.artifact_rom_ext && 'true' || 'false' }}"
+          # Select artifacts to build
+          if [ "$ARTIFACT_ROM_EXT" == "true" ]
+          then
+            RELEASE_OPTS+=("--release-artifacts" "rom_ext")
+          fi
+          if [ "$ARTIFACT_PERSO" == "true" ]
+          then
+            RELEASE_OPTS+=("--release-artifacts" "perso")
+          fi
+          if [ -n "$CREATE_BRANCH" ]
+          then
+            RELEASE_OPTS+=("--create-branch" "$CREATE_BRANCH")
+          fi
+          ot-sku/scripts/release.py \
+            ${RELEASE_OPTS[@]} \
+            --verbose \
+            --pre-sign \
+            --ot-repo opentitan \
+            --release-info=ot_repo="${{ inputs.ot_repo }}" \
+            --release-title "$RELEASE_TAG" \
+            --release-notes "$RELEASE_TAG" \
+            "$RELEASE_TAG"

@@ -39,10 +39,7 @@ def print_error(pargs, msg):
 def print_debug(pargs, msg):
     if not msg or pargs.verbose < 1:
         return
-    if pargs.gha_console:
-        print(f"::debug::{msg}")
-    else:
-        print(f"debug: {msg}")
+    print(f"debug: {msg}")
 
 
 def print_group(pargs, name, content):
@@ -68,7 +65,7 @@ def parse_json(pargs, asset_msg, json_str):
         sys.exit(1)
 
 
-def modify_extension_bzl(pargs, extension_bzl, archives, keep_entries=None):
+def modify_extension_bzl(pargs, extension_bzl, archives):
     extension_ast = ast.parse(extension_bzl)
     # Look for an assignment to '_ARCHIVES'
     archives_assign = None
@@ -79,28 +76,26 @@ def modify_extension_bzl(pargs, extension_bzl, archives, keep_entries=None):
         print_error(pargs, "could not find assignement to _ARCHIVES in extension.bzl")
         sys.exit(1)
 
-    # If we want to keep some entries, we need to evaluate the original dictionary.
-    if keep_entries:
-        # Evaluate the original dictionary.
-        if not isinstance(archives_assign.value, ast.Dict):
-            print_error("Cannot update _ARCHIVES in extension.bzl: a dictionary was expected")
-            sys.exit(1)
-        # Note that `literal_eval` is safe, it will not execute any python code. The downside
-        # is that it only works for constants expressions but we know this is the case since
-        # the content of _ARCHIVES was generated in the presign step.
-        try:
-            old_archives = ast.literal_eval(archives_assign.value)
-        except Exception as e:
-            print_error(pargs, "cannot parse _ARCHIVES in extension.bzl")
-            print_group(pargs, "error", e)
-            print_group(
-                pargs, "content",
-                "\n".join(extension_bzl[archives_assign.lineno - 1:archives_assign.end_lineno])
-            )
-            sys.exit(1)
+    # Evaluate the original dictionary.
+    if not isinstance(archives_assign.value, ast.Dict):
+        print_error("Cannot update _ARCHIVES in extension.bzl: a dictionary was expected")
+        sys.exit(1)
+    # Note that `literal_eval` is safe, it will not execute any python code. The downside
+    # is that it only works for constants expressions but we know this is the case since
+    # the content of _ARCHIVES was generated in the presign step.
+    try:
+        old_archives = ast.literal_eval(archives_assign.value)
+    except Exception as e:
+        print_error(pargs, "cannot parse _ARCHIVES in extension.bzl")
+        print_group(pargs, "error", e)
+        print_group(
+            pargs, "content",
+            "\n".join(extension_bzl[archives_assign.lineno - 1:archives_assign.end_lineno])
+        )
+        sys.exit(1)
 
-        old_archives = {key: val for (key, val) in old_archives.items() if key in keep_entries}
-        archives = old_archives | archives
+    # Keep old entries and just overwrite the ones of interest.
+    archives = old_archives | archives
 
     # Use the AST info to remove the old assignment and create a new one.
     extension_bzl = extension_bzl.splitlines(True)
@@ -369,6 +364,11 @@ def create_presign_release(pargs):
         ARTIFACTS[art]["presign_label"]
         for art in pargs.release_artifacts
     ]
+
+    # Record HEAD of the opentitan and ot-sku repositories.
+    ot_head = get_repo_head(pargs, pargs.ot_repo)
+    ot_sku_head = get_repo_head(pargs, pargs.ot_sku_repo)
+
     # Build the artifacts.
     run_or_exit(pargs, "cannot build provisioning artifacts", [
         pargs.bazelisk, "build"] + pargs.bazel_opts + [
@@ -379,8 +379,14 @@ def create_presign_release(pargs):
     # Obtain absolute paths to the artefacts.
     binaries = [cquery_path(pargs, label) for label in artifact_labels]
 
-    # Obtain the hash of the current HEAD so that we can tag it.
-    cur_head = get_repo_head(pargs, pargs.ot_sku_repo)
+    # Record release information.
+    release_info = pargs.release_info | {
+        'ot_head': ot_head,
+        'presign_ot_sku_head': ot_sku_head,
+        'release_artifacts': pargs.release_artifacts,
+    }
+    release_info_json_path = Path("release_info.json")
+    release_info_json_path.write_text(json.dumps(release_info, indent="    "))
 
     # Create release.
     default_release_notes = "This is a presigning release of the following artifacts: {}".format(
@@ -396,9 +402,11 @@ def create_presign_release(pargs):
         # Use tag as title if none is provided.
         "-t", pargs.release_title or pargs.tag,
         # Target the commit at which we did the build.
-        "--target", cur_head,
+        "--target", ot_sku_head,
         # Release tag
         pargs.tag,
+        # Release a info file
+        release_info_json_path.resolve(),
     ] + binaries,  # Binaries to release
     )
 
@@ -444,57 +452,55 @@ def create_presign_branch(pargs):
     )
 
     # Create a release branch.
-    create_branch(pargs, release_sha, pargs.release_branch)
+    create_branch(pargs, release_sha, pargs.create_branch)
 
     # Push a commit to the branch.
     push_commit(
-        pargs, pargs.release_branch,
+        pargs, pargs.create_branch,
         f"Update archives for presigning release {pargs.tag}",
         orig_extension_bzl, new_extension_bzl
     )
 
-    # If we do not need to edit the workflow file, stop here.
-    if not pargs.edit_workflow:
-        return
-    # Get the content of the original release flow.
-    orig_workflow_release = get_file_content(pargs, release_sha, ".github/workflows/release.yml")
-    # Generate a workflow file.
-    new_workflow = modify_workflow_release(
-        pargs,
-        base64.b64decode(orig_workflow_release["content"]).decode('utf-8'),
-        pargs.edit_workflow
-    ).encode('utf-8')
-
-    # Push a commit to the branch.
-    push_commit(
-        pargs, pargs.release_branch,
-        "Prepare release flow for post-signing",
-        orig_workflow_release, new_workflow
-    )
-
 
 def create_postsign_release(pargs):
-    # Obtain the hash of the current HEAD so that we can tag it.
-    cur_head = get_repo_head(pargs, pargs.ot_sku_repo)
-    branch_head = target_commitish_to_sha(pargs, f"heads/{pargs.release_branch}")
+    # Get current ot-sku head for the target release.
+    ot_sku_head = get_repo_head(pargs, pargs.ot_sku_repo)
+    # Obtain the release_info.json file from the pre-sign release.
+    presign_release_info = get_release_info(pargs, pargs.post_sign)
+    # Get asset information.
+    release_info_artifact = get_release_asset_info(
+        pargs, presign_release_info, {
+            "": ("release_info", [".json"])
+        }
+    )
+    release_info = parse_json(pargs, "release_info.json",
+                              download_asset(pargs, release_info_artifact[""]))
 
-    if cur_head != branch_head:
-        print_warning(
-            pargs,
-            f"The ot-sku HEAD ({cur_head}) differs from the release branch head ({branch_head})"
-        )
+    # Switch the OpenTitan repository to the correct commit.
+    run_or_exit(
+        pargs,
+        "cannot checkout {} in repository {}".format(release_info["ot_head"], pargs.ot_repo),
+        ["git", "checkout", release_info["ot_head"]],
+        cwd=pargs.ot_repo,
+    )
+
+    # Release all artifacts which were requested and for which a pre-sign release was done.
+    release_artifacts = [
+        artifact for artifact in pargs.release_artifacts
+        if artifact in release_info["release_artifacts"]
+    ]
 
     # Run a signature test check.
     run_or_exit(pargs, "cannot verify the signatures", [
         pargs.bazelisk, "test"] + pargs.bazel_opts + [
         "--test_output=streamed"] + [
-            ARTIFACTS[art]["sig_test_label"] for art in pargs.release_artifacts],
+            ARTIFACTS[art]["sig_test_label"] for art in release_artifacts],
         cwd=pargs.ot_repo,
     )
 
     artifact_labels = [
         ARTIFACTS[art]["release_label"]
-        for art in pargs.release_artifacts
+        for art in release_artifacts
     ]
     # Build the artifacts.
     run_or_exit(pargs, "cannot build release artifacts", [
@@ -505,6 +511,15 @@ def create_postsign_release(pargs):
 
     # Obtain absolute paths to the artefacts.
     binaries = [cquery_path(pargs, label) for label in artifact_labels]
+
+    # Record release information.
+    release_info = release_info | pargs.release_info | {
+        'postsign_ot_sku_head': ot_sku_head,
+        # We might have a smaller list if we release only a subset.
+        'release_artifacts': release_artifacts,
+    }
+    release_info_json_path = Path("release_info.json")
+    release_info_json_path.write_text(json.dumps(release_info, indent="    "))
 
     # Create release.
     run_gh_or_exit(pargs, "cannot create release", [
@@ -517,14 +532,16 @@ def create_postsign_release(pargs):
         # Use tag as title if none is provided.
         "-t", pargs.release_title or pargs.tag,
         # Target the commit at which we did the build.
-        "--target", cur_head,
+        "--target", ot_sku_head,
         # Release tag
         pargs.tag,
+        # Release a info file
+        release_info_json_path.resolve(),
     ] + binaries,  # Binaries to release
     )
 
 
-def update_postsign_branch(pargs):
+def create_postsign_branch(pargs):
     # Important note:
     # this entire function is written in such a way that it does not need git
     # access. It only requires access the github API through `gh`.
@@ -532,19 +549,20 @@ def update_postsign_branch(pargs):
     # Get asset information so that we can update the archives in the extension.
     release_info = get_release_info(pargs, pargs.tag)
 
-    # Get the SHA of the release branch.
-    release_branch_sha = target_commitish_to_sha(pargs, pargs.release_branch)
+    # Convert release target into a SHA.
+    release_sha = target_commitish_to_sha(pargs, release_info["targetCommitish"])
 
     # Get asset information.
     artifact_info = get_release_asset_info(
         pargs, release_info, {
-            ARTIFACTS[art]["release_ext_repo"]: ARTIFACTS[art]["release_name"]
-            for art in pargs.release_artifacts
+            art_info["release_ext_repo"]: art_info["release_name"]
+            for art_info in ARTIFACTS.values()
         },
+        allow_no_match=True,
     )
 
     # Get the content of the original extension file.
-    orig_extension_bzl = get_file_content(pargs, release_branch_sha, "extension.bzl")
+    orig_extension_bzl = get_file_content(pargs, release_sha, "extension.bzl")
 
     # Generate a modified extension file.
     new_extension_bzl = modify_extension_bzl(
@@ -556,12 +574,6 @@ def update_postsign_branch(pargs):
             } | decode_github_integrity(art_info['digest'])
             for (repo, art_info) in artifact_info.items()
         },
-        # Keep the original presign entries (which points to the BUILD
-        # release and not the final release).
-        keep_entries=[
-            ARTIFACTS[art]["presign_ext_repo"]
-            for art in pargs.release_artifacts
-        ]
     ).encode('utf-8')
 
     # Run buildifier to make sure that it is formatted properly.
@@ -570,9 +582,12 @@ def update_postsign_branch(pargs):
         new_extension_bzl
     )
 
+    # Create a release branch.
+    create_branch(pargs, release_sha, pargs.create_branch)
+
     # Push a commit to the branch.
     push_commit(
-        pargs, pargs.release_branch,
+        pargs, pargs.create_branch,
         "Update archives for release",
         orig_extension_bzl, new_extension_bzl
     )
@@ -624,9 +639,8 @@ def main(argv):
         action='append',
     )
     parser.add_argument(
-        '--release-branch',
-        required=True,
-        help="name of the release branch to create/update",
+        '--create-branch',
+        help="name of the release branch to create (optional)",
     )
     parser.add_argument(
         'tag',
@@ -651,10 +665,10 @@ def main(argv):
         help="skip checks that opentitan/ot-sku repositories are clean (development only)",
     )
     parser.add_argument(
-        '--edit-workflow',
-        help="Modify anchors in the release.yml file, format is ANCHOR=VALUE",
+        '--release-info',
         default=[],
         action='append',
+        help="Add key-value pair to the release_info.json file. The format is KEY=VALUE"
     )
     step_group = parser.add_mutually_exclusive_group(required=True)
     step_group.add_argument(
@@ -664,10 +678,20 @@ def main(argv):
     )
     step_group.add_argument(
         '--post-sign',
-        action='store_true',
-        help="Perform post-signing steps"
+        metavar='TAG',
+        help="Perform post-signing steps, using the provided GitHub release tag "
     )
     args = parser.parse_args()
+
+    # Parse release info.
+    release_info = {}
+    for kvp in args.release_info:
+        if '=' not in kvp:
+            print_error(args, f"invalid key-value pair '{kvp}'")
+            sys.exit(1)
+        key, val = kvp.split('=', maxsplit=1)
+        release_info[key] = val
+    args.release_info = release_info
 
     # Parse artifacts list. An empty list means all.
     if not args.release_artifacts:
@@ -676,16 +700,6 @@ def main(argv):
     if invalid := [art for art in args.release_artifacts if art not in ARTIFACTS.keys()]:
         print_error(args, "invalid artifact: {}".format(invalid[0]))
         sys.exit(1)
-
-    # Parse workflow edits.
-    workflow_edits = {}
-    for edit in args.edit_workflow:
-        if '=' not in edit:
-            print_error(args, "invalid workflow edit '{edit}', format is ANCHOR=VALUE")
-            sys.exit(1)
-        anchor, val = edit.split('=', maxsplit=1)
-        workflow_edits[anchor] = val
-    args.edit_workflow = workflow_edits
 
     # Resolve some paths since we are going to change the current directory.
     # Also do some sanity checks.
@@ -729,10 +743,12 @@ def main(argv):
 
     if args.pre_sign:
         create_presign_release(args)
-        create_presign_branch(args)
+        if args.create_branch:
+            create_presign_branch(args)
     if args.post_sign:
         create_postsign_release(args)
-        update_postsign_branch(args)
+        if args.create_branch:
+            create_postsign_branch(args)
 
 
 if __name__ == '__main__':
