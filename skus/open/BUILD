@@ -6,12 +6,6 @@ load("@rules_rust//rust:defs.bzl", "rust_library")
 
 package(default_visibility = ["//visibility:public"])
 
-# Benchtop provisioning orchestrator configuration file.
-exports_files([
-    "emulation_gb_ti.hjson",
-    "gb_ti.hjson",
-])
-
 cc_library(
     name = "personalize_fw_ext",
     srcs = ["personalize_ext.c"],
