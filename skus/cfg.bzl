@@ -33,8 +33,11 @@ EXT_EARLGREY_SKUS = {
     # Same as ot01 SKU below, except uses fake CA for testing in CI.
     "ot01_staging": {
         "otp": "ot01",
+        # TODO: use a fake CA within `ot-sku` so that CI can catch a mismatch between the
+        # UDS template and CA subject once these are changed from the upstream values.
         "ca_data": "@lowrisc_opentitan//sw/device/silicon_creator/manuf/keys/fake:ca_data",
         "dice_format": "x509",
+        "uds_template": "@provisioning_exts//open/cert:uds_ot01.hjson",
         "host_ext_libs": ["@provisioning_exts//open:ft_ext_lib"],
         "device_ext_libs": ["@provisioning_exts//open:personalize_fw_ext"],
         "ownership_libs": ["@provisioning_exts//open/rom_ext:owner"],
@@ -54,6 +57,7 @@ EXT_EARLGREY_SKUS = {
         "otp": "ot01",
         "ca_data": "@provisioning_exts//open/keys/ca:ca_data",
         "dice_format": "x509",
+        "uds_template": "@provisioning_exts//open/cert:uds_ot01.hjson",
         "host_ext_libs": ["@provisioning_exts//open:ft_ext_lib"],
         "device_ext_libs": ["@provisioning_exts//open:personalize_fw_ext"],
         "ownership_libs": ["@provisioning_exts//open/rom_ext:owner"],
