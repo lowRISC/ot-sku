@@ -18,7 +18,7 @@ load("@provisioning_exts//:cfg.bzl", "EXT_EARLGREY_SKUS")
 
 package(default_visibility = ["//visibility:public"])
 
-SKU = "ot00"
+SKU = "ot01"
 
 manifest(d = {
     "name": "manifest_open",
@@ -42,7 +42,7 @@ ROM_EXT_BAZEL_FEATURES = [
 #
 # bazel build //hw/bitstream/universal:splice \
 #   --//hw/bitstream/universal:env=//hw/top_earlgrey:fpga_hyper310_rom_ext \
-#   --//hw/bitstream/universal:otp=@provisioning_exts//open/otp/ot00:otp_img_prod_manuf_personalized
+#   --//hw/bitstream/universal:otp=@provisioning_exts//open/otp/ot01:otp_img_prod_manuf_personalized
 
 opentitan_binary(
     name = "rom_ext_dice_x509_fake_slot_virtual",

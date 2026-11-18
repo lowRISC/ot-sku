@@ -2,8 +2,8 @@
 # Licensed under the Apache License, Version 2.0, see LICENSE for details.
 # SPDX-License-Identifier: Apache-2.0
 
-# SKU: OT__.
-# Version: 02.
+# SKU: OT01.
+# Version: 01.
 
 load(
     "@lowrisc_opentitan//rules:const.bzl",
@@ -43,20 +43,25 @@ otp_json(
                 # CREATOR_SW_CFG_AST_CFG = ...
                 # Enable AST initialization.
                 "CREATOR_SW_CFG_AST_INIT_EN": otp_hex(CONST.MUBI4_TRUE),
+                # This legacy field is unused. Keep it at 0x0.
                 "CREATOR_SW_CFG_ROM_EXT_SKU": otp_hex(0x0),
                 # Enable SPHINCS+/SLH-DSA signature verification.
                 "CREATOR_SW_CFG_SIGVERIFY_SPX_EN": otp_hex(0x0),
-                # Enable flash data page scrambling and ECC.
+                # Configure scrambling (byte 0), ECC (byte 1), and high-endurance
+                # (byte 2) for flash data pages and flash info pages for boot data.
+                # Each byte is a MultiBitBool4 value (0x06 = True, 0x09 = False).
+                # See `sw/device/silicon_creator/lib/drivers/flash_ctrl.h` and
+                # `sw/device/lib/base/multibits.h` in `lowRISC/opentitan`.
+                # Enable scrambling and ECC, and disable high-endurance on data pages.
                 "CREATOR_SW_CFG_FLASH_DATA_DEFAULT_CFG": otp_hex(0x00090606),
-                # Keep scrambling(byte 0), ECC (byte 1), and high-endurance (byte 2) disabled (see https://github.com/lowRISC/opentitan/blob/e0d342218eb796ae1ffd8cba5eedc6fcf9422d87/sw/device/silicon_creator/lib/drivers/flash_ctrl.h#L139-L144, assuming `__CHAR_BIT__` is 8)
-                # Each of these fields take [multibit bool 4](https://github.com/lowRISC/opentitan/blob/e0d342218eb796ae1ffd8cba5eedc6fcf9422d87/sw/device/lib/base/multibits.h#L20-L21) as input, with 0x06 corresponding to True and 0x09 corresponding to False
+                # Disable scrambling, ECC, and high-endurance on info pages for boot data.
                 "CREATOR_SW_CFG_FLASH_INFO_BOOT_DATA_CFG": otp_hex(0x00090909),
                 # Keep default scrambling and ECC configuration on keymgr seed
                 # flash info pages.
                 "CREATOR_SW_CFG_FLASH_HW_INFO_CFG_OVERRIDE": otp_hex(0x0),
                 # Disable use of entropy for countermeasures.
                 "CREATOR_SW_CFG_RNG_EN": otp_hex(CONST.HARDENED_FALSE),
-                # Disable main system clock jitter.
+                # Enable jitter on the main system clock.
                 "CREATOR_SW_CFG_JITTER_EN": otp_hex(CONST.MUBI4_TRUE),
                 # Only initialize retention SRAM on PoR.
                 "CREATOR_SW_CFG_RET_RAM_RESET_MASK": otp_hex(0x0),
@@ -93,7 +98,8 @@ otp_json(
                 "CREATOR_SW_CFG_RNG_HEALTH_CONFIG_DIGEST": otp_hex(0x8264cf75),
                 # Enable SRAM scramble key rotation on every boot.
                 "CREATOR_SW_CFG_SRAM_KEY_RENEW_EN": otp_hex(0x0),
-                # Disable ROM_EXT immutable section.
+                # Disable ROM verification and execution of the ROM_EXT
+                # immutable section until we freeze the final ROM_EXT image.
                 "CREATOR_SW_CFG_IMMUTABLE_ROM_EXT_EN": otp_hex(0x0),
             },
         ),
@@ -113,24 +119,27 @@ otp_json(
                 "OWNER_SW_CFG_ROM_ERROR_REPORTING": otp_hex(CONST.SHUTDOWN.REDACT.NONE),
                 # Enable ROM bootstrap.
                 "OWNER_SW_CFG_ROM_BOOTSTRAP_DIS": otp_hex(0x0),
-                # Disable all alert classes with enables set to kAlertEnableNone.
+                # Enable alert classes A and B. Disable classes C and D.
                 "OWNER_SW_CFG_ROM_ALERT_CLASS_EN": otp_per_class_bytes(
                     A = CONST.ALERT.ENABLE,
                     B = CONST.ALERT.ENABLE,
                     C = CONST.ALERT.NONE,
                     D = CONST.ALERT.NONE,
                 ),
-                # Set all alert escalation policies to kAlertEscalateNone.
+                # Escalate alert classes A and B through phase 3. Disable
+                # escalation for classes C and D.
                 "OWNER_SW_CFG_ROM_ALERT_ESCALATION": otp_per_class_bytes(
                     A = CONST.ALERT.ESC_PHASE_3,
                     B = CONST.ALERT.ESC_PHASE_3,
                     C = CONST.ALERT.ESC_NONE,
                     D = CONST.ALERT.ESC_NONE,
                 ),
-                # Set all alert classifications to not configured (kAlertClassX).
+                # Classify selected fatal alerts as class A and recoverable
+                # alerts as class B in PROD and PROD_END. Leave all other
+                # alerts as kAlertClassX.
                 "OWNER_SW_CFG_ROM_ALERT_CLASSIFICATION": otp_alert_classification(
                     alert_list = EARLGREY_ALERTS,
-                    # Order is:                    prod, prod_end, dev, rma"
+                    # Order is:                   "prod, prod_end, dev, rma"
                     default = "                               X, X, X, X",
                     ordered_params = {
                         "otp_ctrl_fatal_macro_error": "       A, A, X, X",
@@ -163,7 +172,8 @@ otp_json(
                         "rv_core_ibex_recov_hw_err": "        X, X, X, X",
                     },
                 ),
-                # Set all local alert classifications to not configured (kAlertClassX).
+                # Classify all local alerts as class A in PROD and PROD_END.
+                # Leave them as kAlertClassX in DEV and RMA.
                 "OWNER_SW_CFG_ROM_LOCAL_ALERT_CLASSIFICATION": otp_alert_classification(
                     alert_list = EARLGREY_LOC_ALERTS,
                     # Order is:          "prod, prod_end, dev, rma"
@@ -178,7 +188,8 @@ otp_json(
                         "shadow_reg_storage_error": "A, A, X, X",
                     },
                 ),
-                # Set the alert accumulation thresholds to 0 for each class.
+                # Set the alert accumulation thresholds to 3 for classes A and
+                # B, and to 0 for classes C and D.
                 "OWNER_SW_CFG_ROM_ALERT_ACCUM_THRESH": otp_per_class_ints(
                     A = 3,
                     B = 3,
@@ -200,13 +211,14 @@ otp_json(
                     C = "0x0, 0x0, 0x0, 0x0",
                     D = "0x0, 0x0, 0x0, 0x0",
                 ),
-                # Set watchdog bite threshold to 200000 cycles.
+                # Set watchdog bite threshold to 200000 cycles (1.0s at 200kHz AON clock).
                 "OWNER_SW_CFG_ROM_WATCHDOG_BITE_THRESHOLD_CYCLES": otp_hex(0x30d40),
                 # Use the ROM_EXT manifest binding value for first stage
                 # attestation binding value.
                 "OWNER_SW_CFG_ROM_KEYMGR_OTP_MEAS_EN": otp_hex(0x0),
-                # Unused by HW or ROM. SET to `PLAT` for identification.
-                "OWNER_SW_CFG_MANUF_STATE": otp_hex(0x54414c50),
+                # Owner manufacturing state for manifest usage-constraint binding.
+                # Set it to ASCII `OPEN` (little-endian).
+                "OWNER_SW_CFG_MANUF_STATE": otp_hex(0x4e45504f),
                 # Set to 0 since ROM expects both reset info sources (alert and
                 # cpu crash dump) to be disabled.
                 "OWNER_SW_CFG_ROM_RSTMGR_INFO_EN": otp_hex(0x0),
@@ -221,11 +233,11 @@ otp_json(
                     otp_hex(0x66666666),
                     otp_hex(0x00666666),
                 ],
-                # Disable SRAM readback for both ret-ram and main sram.
+                # Enable SRAM readback for both retention SRAM and main SRAM.
                 "OWNER_SW_CFG_ROM_SRAM_READBACK_EN": otp_hex(CONST.MUBI4_TRUE << 4 | CONST.MUBI4_TRUE),
                 # Clear the rstmgr reset reason CSR after copying it to retention SRAM.
                 "OWNER_SW_CFG_ROM_PRESERVE_RESET_REASON_EN": otp_hex(CONST.HARDENED_FALSE),
-                # Skip reset reason validation check in the ROM.
+                # Enable the reset-reason validation check in the ROM.
                 "OWNER_SW_CFG_ROM_RESET_REASON_CHECK_VALUE": otp_hex(CONST.HARDENED_TRUE << 16 | CONST.HARDENED_TRUE),
                 # Enable printing of a banner message in the ROM on every boot.
                 "OWNER_SW_CFG_ROM_BANNER_EN": otp_hex(0x0),
@@ -250,7 +262,7 @@ otp_alert_digest(
 ################################################################################
 otp_json(
     name = "otp_json_image_seed",
-    seed = "85452983286950371191603618368782861611109037138182535346147818831008789508651",
+    seed = "47190255726580687393337113382201297822984966121951042174434891908256346625606",
 )
 
 otp_c_lib_and_personalized_images(

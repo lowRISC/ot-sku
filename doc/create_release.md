@@ -35,7 +35,7 @@ The `presign_perso.tar.xz` and `presign_rom_ext.tar.xz` archives provided by the
 This flow typically looks like this:
 ```bash
 # Setup the SKU that you are making a release for:
-export OT_SKU=ot00
+export OT_SKU=ot01
 export OT_SKU_PATH=/path/to/your/ot-sku
 export HSMTOOL=/path/to/your/hsmtool
 

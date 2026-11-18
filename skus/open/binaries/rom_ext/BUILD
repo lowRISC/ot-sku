@@ -10,7 +10,7 @@ load("@provisioning_exts//:cfg.bzl", "EXT_EARLGREY_SKUS")
 package(default_visibility = ["//visibility:public"])
 
 # TODO: we probably don't want to hardcode a specific SKU everywhere...
-SKU = "ot00"
+SKU = "ot01"
 
 copy_files(
     name = "copy_signed",
