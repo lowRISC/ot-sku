@@ -22,6 +22,8 @@ copy_files(
         # TODO: filter relevant build targets from above label
         "ft_personalize_ot00",
         "ft_flash_scramble_ot00",
+        "ft_personalize_ot01",
+        "ft_flash_scramble_ot01",
     ],
     relative_to = ":BUILD",
     tags = ["manual"],
@@ -42,6 +44,23 @@ signature_test(
     spx_key = EXT_EARLGREY_SKUS[SKU]["spx_key"],
     tags = ["manual"],
 )
+
+# TODO: When signed `ot01` release binaries are available in `perso_release`,
+# enable `signature_test_ot01`, `ft_personalize_ot01`, and `ft_flash_scramble_ot01`.
+# signature_test(
+#     name = "signature_test_ot01",
+#     srcs = [
+#         "@provisioning_exts_extra//perso_release:ft_flash_scramble_ot01_fpga_cw340_rom_with_fake_keys.signed.bin",
+#         "@provisioning_exts_extra//perso_release:ft_flash_scramble_ot01_fpga_hyper310_rom_with_fake_keys.signed.bin",
+#         "@provisioning_exts_extra//perso_release:ft_flash_scramble_ot01_silicon_creator.signed.bin",
+#         "@provisioning_exts_extra//perso_release:ft_personalize_ot01_fpga_cw340_rom_with_fake_keys.signed.bin",
+#         "@provisioning_exts_extra//perso_release:ft_personalize_ot01_fpga_hyper310_rom_with_fake_keys.signed.bin",
+#         "@provisioning_exts_extra//perso_release:ft_personalize_ot01_silicon_creator.signed.bin",
+#     ],
+#     ecdsa_key = EXT_EARLGREY_SKUS["ot01"]["ecdsa_key"],
+#     spx_key = EXT_EARLGREY_SKUS["ot01"]["spx_key"],
+#     tags = ["manual"],
+# )
 
 exec_env_filegroup(
     name = "ft_personalize_ot00",
@@ -76,3 +95,39 @@ exec_env_filegroup(
         "@provisioning_exts_extra//perso_release:ft_flash_scramble_ot00_silicon_creator.signed.bin": "silicon",
     },
 )
+
+# TODO: When signed `ot01` release binaries are available in `perso_release`,
+# enable `ft_personalize_ot01` and `ft_flash_scramble_ot01`.
+# exec_env_filegroup(
+#     name = "ft_personalize_ot01",
+#     testonly = True,
+#     exec_env = {
+#         "@lowrisc_opentitan//hw/top_earlgrey:fpga_hyper310_rom_with_fake_keys": "cw310",
+#         "@lowrisc_opentitan//hw/top_earlgrey:fpga_cw340_rom_with_fake_keys": "cw340",
+#         "@lowrisc_opentitan//hw/top_earlgrey:silicon_creator": "silicon",
+#     },
+#     # The "fake_keys" filenames are an unfortunate consequence of a historical
+#     # choice of naming convention.  They are, in fact, signed by offline HSM keys.
+#     files = {
+#         "@provisioning_exts_extra//perso_release:ft_personalize_ot01_fpga_cw340_rom_with_fake_keys.signed.bin": "cw340",
+#         "@provisioning_exts_extra//perso_release:ft_personalize_ot01_fpga_hyper310_rom_with_fake_keys.signed.bin": "cw310",
+#         "@provisioning_exts_extra//perso_release:ft_personalize_ot01_silicon_creator.signed.bin": "silicon",
+#     },
+# )
+#
+# exec_env_filegroup(
+#     name = "ft_flash_scramble_ot01",
+#     testonly = True,
+#     exec_env = {
+#         "@lowrisc_opentitan//hw/top_earlgrey:fpga_hyper310_rom_with_fake_keys": "cw310",
+#         "@lowrisc_opentitan//hw/top_earlgrey:fpga_cw340_rom_with_fake_keys": "cw340",
+#         "@lowrisc_opentitan//hw/top_earlgrey:silicon_creator": "silicon",
+#     },
+#     # The "fake_keys" filenames are an unfortunate consequence of a historical
+#     # choice of naming convention.  They are, in fact, signed by offline HSM keys.
+#     files = {
+#         "@provisioning_exts_extra//perso_release:ft_flash_scramble_ot01_fpga_cw340_rom_with_fake_keys.signed.bin": "cw340",
+#         "@provisioning_exts_extra//perso_release:ft_flash_scramble_ot01_fpga_hyper310_rom_with_fake_keys.signed.bin": "cw310",
+#         "@provisioning_exts_extra//perso_release:ft_flash_scramble_ot01_silicon_creator.signed.bin": "silicon",
+#     },
+# )
