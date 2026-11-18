@@ -152,6 +152,8 @@ offline_signature_attach(
     spx_signatures = [
         "//open/signatures/rom_ext:spx_signatures",
     ],
+    # Fail on missing signatures.
+    strict = True,
     tags = ["manual"],
 )
 

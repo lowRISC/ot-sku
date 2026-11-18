@@ -63,6 +63,8 @@ offline_signature_attach(
     spx_signatures = [
         "{}:spx_signatures".format(EXT_EARLGREY_SKUS[SKU]["signature_prefix"]),
     ],
+    # Fail on missing signatures.
+    strict = True,
     tags = ["manual"],
 )
 
