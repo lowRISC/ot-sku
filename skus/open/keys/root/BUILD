@@ -13,6 +13,8 @@ load("@lowrisc_opentitan//rules:signing.bzl", "keyset")
 
 package(default_visibility = ["//visibility:public"])
 
+# TODO: Replace placeholder `fake_keygen` root keys below with real
+# offline HSM root keys generated during the Open Market key ceremony.
 keyset(
     name = "keyset",
     build_setting_default = "",
@@ -61,7 +63,7 @@ otp_json_rot_keys(
                 "ROT_CREATOR_AUTH_CODESIGN_ECDSA_KEY2": "0xf4659f9f9425c19c8bb6ce3c3877936eb211574cd1011700ef8d6c97de142bef483eb38c3c56cd3321f00046a0a1dd58334589ae0010246bebd1dab26d128de0",
 
                 # ot00-earlgrey-a2-root-ecdsa-dev-0.pub.der
-                "ROT_CREATOR_AUTH_CODESIGN_ECDSA_KEY_TYPE3": otp_hex(CONST.SIGVERIFY.KEY_TYPE.TEST),
+                "ROT_CREATOR_AUTH_CODESIGN_ECDSA_KEY_TYPE3": otp_hex(CONST.SIGVERIFY.KEY_TYPE.DEV),
                 "ROT_CREATOR_AUTH_CODESIGN_ECDSA_KEY3": "0x5b42287ff8463b12e686b60279f1c9a8370f01dafb673cc326e64431edbd29844f75b5db48ec5a487e5d9d36a63e62c890d2602ac7ecb9d85c4c9bd016be162e",
 
                 # slhdsa OTP values created with `opentitantool spx key show <key>`
@@ -81,7 +83,7 @@ otp_json_rot_keys(
                 "ROT_CREATOR_AUTH_CODESIGN_SPX_KEY_CONFIG2": otp_hex(CONST.SPX_CONFIG_ID.SHA2_128S_PREHASH),
 
                 # ot00-earlgrey-a2-root-slhdsa-dev-0.pub.pem
-                "ROT_CREATOR_AUTH_CODESIGN_SPX_KEY_TYPE3": otp_hex(CONST.SIGVERIFY.KEY_TYPE.TEST),
+                "ROT_CREATOR_AUTH_CODESIGN_SPX_KEY_TYPE3": otp_hex(CONST.SIGVERIFY.KEY_TYPE.DEV),
                 "ROT_CREATOR_AUTH_CODESIGN_SPX_KEY3": "0x9577ad5c5d03d7d4860c2b6a2501e7ea5982e0555520c2b0b845a5b3587cb0cf",
                 "ROT_CREATOR_AUTH_CODESIGN_SPX_KEY_CONFIG3": otp_hex(CONST.SPX_CONFIG_ID.SHA2_128S_PREHASH),
             },

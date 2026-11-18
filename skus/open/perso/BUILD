@@ -13,7 +13,7 @@ load("@provisioning_exts//:cfg.bzl", "EXT_EARLGREY_SKUS")
 
 package(default_visibility = ["//visibility:public"])
 
-SKU = "ot00"
+SKU = "ot01"
 
 offline_presigning_artifacts(
     name = "provisioning_{}".format(SKU),

@@ -42,7 +42,7 @@ git fetch origin earlgrey_1.0.0
 git checkout earlgrey_1.0.0
 
 # Now you can perform your builds or tests
-bazelisk test ${BAZEL_OVERRIDE_ARGS} --test_output=streamed //sw/host/provisioning/orchestrator/tests:e2e_multistage_ot00_staging_hyper310_test
+bazelisk test ${BAZEL_OVERRIDE_ARGS} --test_output=streamed //sw/host/provisioning/orchestrator/tests:e2e_multistage_ot01_staging_hyper310_test
 
 bazelisk build ${BAZEL_OVERRIDE_ARGS} @provisioning_exts//open/rom_ext:rom_ext_dice_x509_prod_slot_virtual
 ```
