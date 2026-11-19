@@ -17,6 +17,8 @@ concurrency:
 jobs:
   lint-check:
     runs-on: "ubuntu-24.04"
+    # Do not run this flow when the branch is replicated on ot-sku-testing
+    if: github.repository != 'lowRISC/ot-sku-testing'
     steps:
       - name: Checkout
         uses: actions/checkout@v5
