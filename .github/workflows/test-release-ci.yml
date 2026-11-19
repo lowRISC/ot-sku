@@ -49,7 +49,7 @@ jobs:
               event_type: 'cross-repo-ci',
               client_payload: {
                 ...payload,
-                target: `${context.repo.owner}/ot-sku-testing/main/trigger-test-release.yml`,
+                target: `${context.repo.owner}/ot-sku-testing/feedback_result/trigger-test-release.yml`,
               }
             });
 
