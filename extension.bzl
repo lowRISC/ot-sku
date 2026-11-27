@@ -26,31 +26,35 @@ hub_repo = repository_rule(
 # Important note: this dictionary is read and modified by the release script (script/release.py).
 # Therefore, it needs to remain a constant dictionary which can be parsed by the python ast module.
 _ARCHIVES = {
-    "presign_perso": {
-        "url": "https://github.com/lowRISC/ot-sku/releases/download/FAKE_BUILD_20260518_rc00/presign_perso.tar.xz",
-    },
-    "presign_rom_ext": {
-        "url": "https://github.com/lowRISC/ot-sku/releases/download/FAKE_BUILD_20260518_rc00/presign_rom_ext.tar.xz",
-    },
-    "perso_release": {
-        "url": "https://github.com/lowRISC/ot-sku/releases/download/FAKE_RELEASE_20260518_rc00/perso_release.tar.xz",
-    },
-    "rom_ext_release": {
-        "url": "https://github.com/lowRISC/ot-sku/releases/download/FAKE_RELEASE_20260518_rc00/rom_ext_release.tar.xz",
+    "ot00": {
+        "presign_perso": {
+            "url": "https://github.com/lowRISC/ot-sku/releases/download/FAKE_BUILD_20260518_rc00/presign_perso.tar.xz",
+        },
+        "presign_rom_ext": {
+            "url": "https://github.com/lowRISC/ot-sku/releases/download/FAKE_BUILD_20260518_rc00/presign_rom_ext.tar.xz",
+        },
+        "perso_release": {
+            "url": "https://github.com/lowRISC/ot-sku/releases/download/FAKE_RELEASE_20260518_rc00/perso_release.tar.xz",
+        },
+        "rom_ext_release": {
+            "url": "https://github.com/lowRISC/ot-sku/releases/download/FAKE_RELEASE_20260518_rc00/rom_ext_release.tar.xz",
+        },
     },
 }
 
 def _extra_impl(mctx):
-    for (name, info) in _ARCHIVES.items():
-        http_archive(
-            name = name,
-            **info
-        )
+    for (sku, archives) in _ARCHIVES.items():
+        for (name, info) in archives.items():
+            http_archive(
+                name = "{}_{}".format(name, sku),
+                **info
+            )
     hub_repo(
         name = "provisioning_exts_extra",
         repo_mapping = {
-            name: "@{}//:BUILD.bazel".format(name)
-            for name in _ARCHIVES
+            name: "@{}_{}//:BUILD.bazel".format(name, sku)
+            for name in archives
+            for (sku, archives) in _ARCHIVES.items()
         },
     )
 
