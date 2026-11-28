@@ -7,7 +7,10 @@
 if [[ -e skus/open/fake_keygen/softhsm2.conf ]]; then
 
   export SOFTHSM2_CONF=${PWD}/skus/open/fake_keygen/softhsm2.conf
-  export HSMTOOL_MODULE=/usr/lib/x86_64-linux-gnu/softhsm/libsofthsm2.so
+  if [ -z "$HSMTOOL_MODULE" ]; then
+    echo "Setting default value for HSMTOOL_MODULE"
+    export HSMTOOL_MODULE=/usr/lib/x86_64-linux-gnu/softhsm/libsofthsm2.so
+  fi
 
   # Default configuration for the checked-in database (used for **testing only**)
   export HSMTOOL_TOKEN=temp
